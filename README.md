@@ -19,3 +19,7 @@ A customizable admin menu for FiveM servers, allowing admins to easily perform s
 
 * Menu Settings
 ![image](https://github.com/user-attachments/assets/2a2c3e88-0169-401f-b4f1-6574aab1ebef)
+
+* Dependencies
+* Framework: ESX
+* [ox_lib](https://github.com/overextended/ox_lib)
