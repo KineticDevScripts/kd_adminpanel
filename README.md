@@ -1,6 +1,6 @@
 # Fivem Admin Panel
 
-A customizable admin menu for FiveM servers, allowing admins to easily perform self actions, manage players, resources, view action logs, and menu settings with a sleek, responsive interface.
+A customizable admin menu for FiveM servers, allowing admins to easily perform self actions, manage players and resources, view action logs, and tailor the menu design to their preference with a sleek responsive interface.
 
 ## Features:
 
