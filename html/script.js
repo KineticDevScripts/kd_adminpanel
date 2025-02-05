@@ -163,7 +163,7 @@ function updatePlayerTable(players) {
 
       row.innerHTML = `
           <td class="online-avatar">
-              <img src="https://r2.fivemanage.com/TtSTIxILaY5JBC07uD0DI/kni.png" style="width: 50px; height: auto;" class="player-avatar">
+              <img src="https://r2.fivemanage.com/KQGRRm8DukQthtgazMChN/images/kinetic-3.jpg" style="width: 50px; height: auto;" class="player-avatar">
           </td>
           <td class="online-name">${player.name}</td>
           <td class="online-id">${player.id}</td>
