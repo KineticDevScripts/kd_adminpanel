@@ -5,10 +5,10 @@ A customizable admin menu for FiveM servers, allowing admins to easily perform s
 ## Features:
 
 * Dashboard:
-![image](https://github.com/user-attachments/assets/dcfb091a-72c1-40b7-b2b5-6ee169102692)
+![image](https://github.com/user-attachments/assets/cc824a8d-363f-4ee3-9842-65f1ae06bcb7)
 
 * Admin Actions:
-![image](https://github.com/user-attachments/assets/3bb8563f-5ac1-40b7-9c65-a1894aa015c6)
+![image](https://github.com/user-attachments/assets/5a0c1301-73f8-483a-aa09-bb5dc14d0fcd)
 
 * Player Management
 ![image](https://github.com/user-attachments/assets/58c07a47-4955-4e25-85b1-6d0bbb4674f1)
