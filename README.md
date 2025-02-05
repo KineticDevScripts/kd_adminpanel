@@ -1,6 +1,8 @@
-Fivem Admin Panel
+# Fivem Admin Panel
 
 A customizable admin menu for FiveM servers, allowing admins to easily perform self actions, manage players, resources, view action logs, and menu settings with a sleek, responsive interface.
+
+## Features:
 
 * Dashboard:
 ![image](https://github.com/user-attachments/assets/dcfb091a-72c1-40b7-b2b5-6ee169102692)
@@ -20,6 +22,6 @@ A customizable admin menu for FiveM servers, allowing admins to easily perform s
 * Menu Settings
 ![image](https://github.com/user-attachments/assets/2a2c3e88-0169-401f-b4f1-6574aab1ebef)
 
-* Dependencies
+## Dependencies
 * Framework: ESX
 * [ox_lib](https://github.com/overextended/ox_lib)
