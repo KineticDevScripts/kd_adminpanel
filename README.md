@@ -5,23 +5,24 @@ A customizable admin menu for FiveM servers, allowing admins to easily perform s
 ## Features:
 
 * Dashboard:
-![image](https://github.com/user-attachments/assets/cc824a8d-363f-4ee3-9842-65f1ae06bcb7)
+![image](https://github.com/user-attachments/assets/62b2ca6b-ad80-4cbf-8659-25c0fe36630e)
 
 * Admin Actions:
-![image](https://github.com/user-attachments/assets/5a0c1301-73f8-483a-aa09-bb5dc14d0fcd)
+![image](https://github.com/user-attachments/assets/68f9acd3-3809-4af1-9488-2b357936281a)
 
 * Player Management
-![image](https://github.com/user-attachments/assets/58c07a47-4955-4e25-85b1-6d0bbb4674f1)
+![image](https://github.com/user-attachments/assets/9bb3bb6e-ccd7-4b68-89ef-7a88e01ea7ac)
 
 * Resource Management
-![image](https://github.com/user-attachments/assets/a8ebf85a-ce16-4335-9e43-9a0d5faf7880)
+![image](https://github.com/user-attachments/assets/ecced2bc-b604-40a7-b1d0-f9076cc411f9)
 
 * Action Logs
-![image](https://github.com/user-attachments/assets/27586431-da51-41ca-9548-7f1be43d6a9a)
+![image](https://github.com/user-attachments/assets/22aa8ae8-bd61-484e-954e-7c8dd0e9f8de)
 
 * Menu Settings
-![image](https://github.com/user-attachments/assets/2a2c3e88-0169-401f-b4f1-6574aab1ebef)
+![image](https://github.com/user-attachments/assets/4bcfa3b4-0f46-472a-8733-c3c0d0824ea2)
 
 ## Dependencies
 * Framework: ESX
 * [ox_lib](https://github.com/overextended/ox_lib)
+* [oxmysql](https://github.com/overextended/oxmysql)
