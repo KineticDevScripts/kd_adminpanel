@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Admin Menu</title>
   <link rel="stylesheet" href="styles.css">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 </head>
 <body>
   <div id="menu-container" class="menu" style="display: none;">
@@ -16,7 +16,7 @@
       </div>
       <ul>
         <li onclick="openTab('server-data')" class="server-data" role="button">Dashboard</li>
-        <li onclick="openTab('dashboard')" class="dashboard" role="button">Admin Actions</li>
+        <li onclick="openTab('dashboard')" class="dashboardB" role="button">Admin Actions</li>
         <li onclick="openTab('players')" class="players" role="button">Online Players</li>
         <li onclick="openTab('resources')" class="resources" role="button">Resources</li>
         <li onclick="openTab('logs')" class="logs" role="button">Logs</li>
@@ -26,6 +26,34 @@
     
     <div id="main-content" class="main-content">
       <button onclick="closeMenu()" class="close-button" aria-label="Close Menu"><i class="fa fa-close"></i></button>
+
+      <div id="server-data" class="tab active">
+        <div class="server-data-header">
+          <h2>Dashboard</h2>
+        </div>
+      
+        <div class="server-data-container">
+          <div class="server-data-section">
+            <h3>Resource Count</h3>
+            <p id="resource-count">Loading...</p>
+          </div>
+      
+          <div class="server-data-section">
+            <h3>Player Count</h3>
+            <p id="player-count">Loading...</p>
+          </div>
+      
+          <div class="server-data-section">
+            <h3>Uptime</h3>
+            <p id="server-uptime">Loading...</p>
+          </div>
+      
+          <div class="server-data-section">
+            <h3>Script Version</h3>
+            <p id="server-version">Loading...</p>
+          </div>
+        </div>
+      </div>
 
       <!-- Dashboard Tab -->
       <div id="dashboard" class="tab">
@@ -37,48 +65,79 @@
     <div class="dashboard">
         <!-- Left Side -->
         <div class="left-side">
-
-            <div class="dashboard-section">
-                <h3>Self Options</h3>
-                <div class="button-group">
-                    <button onclick="selfRevive()" class="dashboard-btn"><i class="fa fa-heart"></i> Revive Self</button>
-                    <button onclick="selfHeal()" class="dashboard-btn2"><i class="fa fa-medkit"></i> Heal Self</button>
-                    <button onclick="openSelfMoneyDialog()" class="dashboard-btn3"><i class="fa fa-money"></i> Give Self Money</button>
-                </div>
+          <div class="dashboard-section">
+            <h3>Self Options</h3>
+            <div class="button-group">
+                <button onclick="selfRevive()" class="dashboard-btn"><i class="fa fa-heart"></i> Revive Self</button>
+                <button onclick="selfHeal()" class="dashboard-btn2"><i class="fa fa-medkit"></i> Heal Self</button>
+                <button onclick="openSelfMoneyDialog()" class="dashboard-btn3"><i class="fa fa-hand-holding-dollar"></i> Give Self Money</button>
+                <button onclick="openSelfItemDialog()" class="dashboard-btn4"><i class="fa fa-user-plus"></i> Give Self Item</button>
+                <button onclick="toggleNoClip()" class="dashboard-btn5"><i class="fa fa-user-plus"></i> Toggle NoClip</button>
+                <button onclick="toggleInvisibility()" class="dashboard-btn6"><i class="fa fa-user-plus"></i> Toggle Invisibility</button>
+                <button onclick="toggleGodMode()" class="dashboard-btn7"><i class="fa fa-user-plus"></i> Toggle GodMode</button>
             </div>
-
-            <div id="dialog" class="dialog-overlay">
-              <div class="dialog-box">
-                <h2>Enter Amount</h2>
-                <input type="number" id="itemAmount" min="1" max="1000" value="1">
-                <br>
-                <button class="confirm-btn" onclick="confirmAmount()">Confirm</button>
-                <button class="cancel-btn" onclick="closeSelfMoneyDialog()">Cancel</button>
-              </div>
-            </div>
-
-            <div class="dashboard-section">
-              <h3>Vehicle Options</h3>
-              <div class="button-group">
-                  <button onclick="openSpawnCarDialog()" class="dashboard-btn4"><i class="fa fa-car"></i> Spawn Car</button>
-              </div>
           </div>
 
-            <div class="dashboard-section">
-                <h3>Server Options</h3>
-                <div class="button-group">
-                    <button class="dashboard-btn5"><i class="fa fa-cogs"></i> Some Action</button>
-                </div>
+          <div class="dashboard-section">
+            <h3>Vehicle Options</h3>
+            <div class="button-group">
+                <button onclick="openSpawnCarDialog()" class="dashboard-btn8"><i class="fa fa-car"></i> Spawn Vehicle</button>
+                <button onclick="deleteVehicle()" class="dashboard-btn9"><i class="fa fa-trash"></i> Delete Vehicle</button>
+                <button onclick="repairVehicle()" class="dashboard-btn10"><i class="fa fa-wrench"></i> Repair Vehicle</button>
             </div>
+          </div>
+
         </div>
 
-        <div id="spawn-car-dialog" class="spawn-car-dialog-overlay">
-          <div class="spawn-car-dialog-box">
+        <div id="dialog" class="dialog-overlay">
+          <div class="dialog-box">
+              <h2>Select Account</h2>
+      
+              <!-- Account Type Dropdown -->
+              <select id="accountType">
+                  <option value="money">Cash</option>
+                  <option value="bank">Bank</option>
+              </select>
+      
+              <br>
+              <h2>Enter Amount</h2>
+      
+              <!-- Amount Input -->
+              <input type="number" id="itemAmount" min="1" max="999999999" value="1">
+              <br>
+      
+              <!-- Buttons -->
+              <button class="confirm-btn" onclick="confirmAmount()">Confirm</button>
+              <button class="cancel-btn" onclick="closeSelfMoneyDialog()">Cancel</button>
+          </div>
+        </div>      
+
+        <div id="self-item-dialog" class="dialog-overlay">
+          <div class="dialog-box">
+              <h2>Enter Item Name</h2>
+      
+              <input type="text" id="selfItemName">
+      
+              <br>
+              <h2>Enter Amount</h2>
+      
+              <!-- Amount Input -->
+              <input type="number" id="selfItemQuantity" min="1" max="999999999" value="1">
+              <br>
+      
+              <!-- Buttons -->
+              <button class="confirm-btn" onclick="confirmSelfItem()">Confirm</button>
+              <button class="cancel-btn" onclick="closeSelfItemDialog()">Cancel</button>
+          </div>
+        </div> 
+
+        <div id="spawn-car-dialog" class="dialog-overlay">
+          <div class="dialog-box">
             <h2>Enter Car Model</h2>
             <input type="text" id="carModel">
             <br>
-            <button class="spawn-car-confirm-btn" onclick="confirmSpawnCar()">Confirm</button>
-            <button class="spawn-car-cancel-btn" onclick="closeSpawnCarDialog()">Cancel</button>
+            <button class="confirm-btn" onclick="confirmSpawnCar()">Confirm</button>
+            <button class="cancel-btn" onclick="closeSpawnCarDialog()">Cancel</button>
           </div>
         </div>
 
@@ -86,57 +145,73 @@
         <div class="right-side">
 
           <div class="dashboard-section">
-              <h3>Developer Options</h3>
-              <div class="button-group">
-                  <button class="dashboard-btn6"><i class="fa fa-check"></i> Action Two</button>
-              </div>
-          </div>
-
-          <div class="dashboard-section">
-              <h3>Entity Management</h3>
-              <div class="button-group">
-                  <button class="dashboard-btn7"><i class="fa fa-play"></i> Action Three</button>
-              </div>
-          </div>
-
-          <div class="dashboard-section">
-            <h3>Server Details</h3>
+            <h3>Server Options</h3>
             <div class="button-group">
-              <button disabled class="dashboard-btn8">
-                <span id="final-option-player-count" class="player-count"></span> 
-              </button>
+              <button onclick="unbanDialog()" class="dashboard-btn11"><i class="fa fa-user-check"></i> Unban A Player</button>
+              <button onclick="announcementDialog()" class="dashboard-btn12"><i class="fa fa-bullhorn"></i> Announcement</button>
+              <button onclick="deleteVehicles()" class="dashboard-btn13"><i class="fa fa-folder-minus"></i> Vehicle Wipe</button>
+              <button onclick="deleteObjects()" class="dashboard-btn14"><i class="fa fa-folder-minus"></i> Object Wipe</button>
+              <button onclick="deletePeds()" class="dashboard-btn15"><i class="fa fa-folder-minus"></i> Ped Wipe</button>
             </div>
           </div>
 
-        </div>
-      </div>
-    </div>
+          <div class="dashboard-section">
+              <h3>Developer Options</h3>
+              <div class="button-group">
+                <button onclick="coordsDialog()" class="dashboard-btn16"><i class="fa fa-location-dot"></i> Copy Coords</button>
+                <button onclick="tpCoordsDialog()" class="dashboard-btn17"><i class="fa fa-map-marker-alt"></i> TP To Coords</button>
+              </div>
+          </div>
 
-    <!-- Server Data Tab -->
-    <div id="server-data" class="tab active">
-      <div class="server-data-header">
-        <h2>Dashboard</h2>
-      </div>
-    
-      <div class="server-data-container">
-        <div class="server-data-section">
-          <h3>Server Status</h3>
-          <p id="server-status">Loading...</p>
-        </div>
-    
-        <div class="server-data-section">
-          <h3>Player Count</h3>
-          <p id="player-count">Loading...</p>
-        </div>
-    
-        <div class="server-data-section">
-          <h3>Uptime</h3>
-          <p id="server-uptime">Loading...</p>
-        </div>
-    
-        <div class="server-data-section">
-          <h3>Server Version</h3>
-          <p id="server-version">Loading...</p>
+          <div id="unban-dialog" class="dialog-overlay">
+            <div class="dialog-box">
+              <h2>Enter License</h2>
+              <input type="text" id="license">
+              <br>
+              <button class="confirm-btn" onclick="confirmUnban()">Confirm</button>
+              <button class="cancel-btn" onclick="closeUnbanDialog()">Cancel</button>
+            </div>
+          </div>
+
+          <div id="announcement-dialog" class="dialog-overlay">
+            <div class="dialog-box">
+              <h2>Enter Announcement</h2>
+              <input type="text" id="announcement">
+              <br>
+              <button class="confirm-btn" onclick="confirmAnnouncement()">Confirm</button>
+              <button class="cancel-btn" onclick="closeAnnouncementDialog()">Cancel</button>
+            </div>
+          </div>
+
+          <div id="coords-dialog" class="dialog-overlay">
+            <div class="dialog-box">
+                <h2>Select Type</h2>
+        
+                <!-- Coord Type Dropdown -->
+                <select id="coordsType">
+                  <option value="xyz">x, y, z</option>
+                  <option value="vec3">vec3(0.0, 0.0, 0.0)</option>
+                  <option value="vec4">vec4(0.0, 0.0, 0.0, 0.0)</option>
+                </select>
+        
+                <br>
+        
+                <!-- Buttons -->
+                <button class="confirm-btn" onclick="confirmCoords()">Confirm</button>
+                <button class="cancel-btn" onclick="closeCoordsDialog()">Cancel</button>
+            </div>
+          </div>
+
+          <div id="tpCoords-dialog" class="dialog-overlay">
+            <div class="dialog-box">
+              <h2>Enter Coords (x, y, z)</h2>
+              <input type="text" id="tp_vec3">
+              <br>
+              <button class="confirm-btn" onclick="confirmTp()">Confirm</button>
+              <button class="cancel-btn" onclick="closeTpDialog()">Cancel</button>
+            </div>
+          </div>
+
         </div>
       </div>
     </div>
@@ -155,16 +230,67 @@
                   <td class="online-name">Keith</td>
                   <td class="online-id">1</td>
                 </tr>
+
                 <tr class="table-row-online">
                   <td class="online-avatar"><img id="online-avatar-img" src="https://r2.fivemanage.com/KQGRRm8DukQthtgazMChN/images/kinetic-3.jpg" alt="Avatar"></td>
                   <td class="online-name">Keith</td>
                   <td class="online-id">2</td>
                 </tr>
+
                 <tr class="table-row-online">
                   <td class="online-avatar"><img id="online-avatar-img" src="https://r2.fivemanage.com/KQGRRm8DukQthtgazMChN/images/kinetic-3.jpg" alt="Avatar"></td>
                   <td class="online-name">Keith</td>
                   <td class="online-id">3</td>
                 </tr>
+
+                <tr class="table-row-online">
+                  <td class="online-avatar"><img id="online-avatar-img" src="https://r2.fivemanage.com/KQGRRm8DukQthtgazMChN/images/kinetic-3.jpg" alt="Avatar"></td>
+                  <td class="online-name">Keith</td>
+                  <td class="online-id">3</td>
+                </tr>
+
+                <tr class="table-row-online">
+                  <td class="online-avatar"><img id="online-avatar-img" src="https://r2.fivemanage.com/KQGRRm8DukQthtgazMChN/images/kinetic-3.jpg" alt="Avatar"></td>
+                  <td class="online-name">Keith</td>
+                  <td class="online-id">3</td>
+                </tr>
+
+                <tr class="table-row-online">
+                  <td class="online-avatar"><img id="online-avatar-img" src="https://r2.fivemanage.com/KQGRRm8DukQthtgazMChN/images/kinetic-3.jpg" alt="Avatar"></td>
+                  <td class="online-name">Keith</td>
+                  <td class="online-id">3</td>
+                </tr>
+
+                <tr class="table-row-online">
+                  <td class="online-avatar"><img id="online-avatar-img" src="https://r2.fivemanage.com/KQGRRm8DukQthtgazMChN/images/kinetic-3.jpg" alt="Avatar"></td>
+                  <td class="online-name">Keith</td>
+                  <td class="online-id">3</td>
+                </tr>
+
+                <tr class="table-row-online">
+                  <td class="online-avatar"><img id="online-avatar-img" src="https://r2.fivemanage.com/KQGRRm8DukQthtgazMChN/images/kinetic-3.jpg" alt="Avatar"></td>
+                  <td class="online-name">Keith</td>
+                  <td class="online-id">3</td>
+                </tr>
+
+                <tr class="table-row-online">
+                  <td class="online-avatar"><img id="online-avatar-img" src="https://r2.fivemanage.com/KQGRRm8DukQthtgazMChN/images/kinetic-3.jpg" alt="Avatar"></td>
+                  <td class="online-name">Keith</td>
+                  <td class="online-id">3</td>
+                </tr>
+
+                <tr class="table-row-online">
+                  <td class="online-avatar"><img id="online-avatar-img" src="https://r2.fivemanage.com/KQGRRm8DukQthtgazMChN/images/kinetic-3.jpg" alt="Avatar"></td>
+                  <td class="online-name">Keith</td>
+                  <td class="online-id">3</td>
+                </tr>
+
+                <tr class="table-row-online">
+                  <td class="online-avatar"><img id="online-avatar-img" src="https://r2.fivemanage.com/KQGRRm8DukQthtgazMChN/images/kinetic-3.jpg" alt="Avatar"></td>
+                  <td class="online-name">Keith</td>
+                  <td class="online-id">3</td>
+                </tr>
+
               </tbody>
             </table>
           </div>
@@ -179,35 +305,57 @@
         </div>
         <div class="action-buttons">
           <button class="pkick-btn" onclick="openKickDialog()">Kick Player</button>
-          <button class="pban-btn" onclick="banPlayer()" hidden>Ban Player</button>
+          <button class="pban-btn" onclick="openBanDialog()">Ban Player</button>
           <button class="pgoto-btn" onclick="gotoPlayer()">Goto Player</button>
           <button class="previve-btn" onclick="revivePlayer()">Revive Player</button>
           <button class="pheal-btn" onclick="healPlayer()">Heal Player</button>
           <button class="pgive-item-btn" onclick="openItemDialog()">Give Item</button>
         </div>
 
+        <!-- Ban Dialog -->
+        <div id="ban-dialog" class="dialog-overlay">
+          <div class="dialog-box">
+            <h2>Enter Reason</h2>
+            <input type="text" id="banReason" aria-label="Enter ban reason">
+            <br>
+            <h2>Select Time</h2>
+        
+            <!-- Ban Time Dropdown -->
+            <select id="banTime">
+                <option value="2"> 2 Hours</option>
+                <option value="24"> 24 Hours</option>
+                <option value="168"> 1 Week</option>
+                <option value="1000000"> Permanent</option>
+            </select>
+    
+            <br>
+            <button class="confirm-btn" onclick="confirmBan()">Confirm</button>
+            <button class="cancel-btn" onclick="closeBanDialog()">Cancel</button>
+          </div>
+        </div>
+
         <!-- Kick Dialog -->
-        <div id="kick-dialog" class="kick-dialog-overlay">
-          <div class="kick-dialog-box">
+        <div id="kick-dialog" class="dialog-overlay">
+          <div class="dialog-box">
             <h2>Enter Reason</h2>
             <input type="text" id="kickReason" aria-label="Enter kick reason">
             <br>
-            <button class="kick-confirm-btn" onclick="confirmKick()">Confirm</button>
-            <button class="kick-cancel-btn" onclick="closeKickDialog()">Cancel</button>
+            <button class="confirm-btn" onclick="confirmKick()">Confirm</button>
+            <button class="cancel-btn" onclick="closeKickDialog()">Cancel</button>
           </div>
         </div>
 
         <!-- Item Dialog -->
-       <div id="item-dialog" class="item-dialog-overlay">
-          <div class="item-dialog-box">
+       <div id="item-dialog" class="dialog-overlay">
+          <div class="dialog-box">
             <h2>Enter Item Name</h2>
             <input type="text" id="itemName" aria-label="Enter item name">
             <br>
             <h2>Enter Item Amount</h2>
             <input type="number" id="itemQuantity" min="1" max="1000" value="1" aria-label="Enter item quantity">
             <br>
-            <button class="item-confirm-btn" onclick="confirmItem()">Confirm</button>
-            <button class="item-cancel-btn" onclick="closeItemDialog()">Cancel</button>
+            <button class="confirm-btn" onclick="confirmItem()">Confirm</button>
+            <button class="cancel-btn" onclick="closeItemDialog()">Cancel</button>
           </div>
         </div>
       </div>
@@ -231,10 +379,37 @@
                   <td class="resources-name">kd_adminpanel</td>
                   <td class="resources-state">Started</td>
                 </tr>
+
                 <tr class="table-row-resources">
                   <td class="resources-name">kd_adminpanel</td>
                   <td class="resources-state">Stopped</td>
                 </tr>
+
+                <tr class="table-row-resources">
+                  <td class="resources-name">kd_adminpanel</td>
+                  <td class="resources-state">Stopped</td>
+                </tr>
+
+                <tr class="table-row-resources">
+                  <td class="resources-name">kd_adminpanel</td>
+                  <td class="resources-state">Stopped</td>
+                </tr>
+
+                <tr class="table-row-resources">
+                  <td class="resources-name">kd_adminpanel</td>
+                  <td class="resources-state">Stopped</td>
+                </tr>
+
+                <tr class="table-row-resources">
+                  <td class="resources-name">kd_adminpanel</td>
+                  <td class="resources-state">Stopped</td>
+                </tr>
+
+                <tr class="table-row-resources">
+                  <td class="resources-name">kd_adminpanel</td>
+                  <td class="resources-state">Stopped</td>
+                </tr>
+
               </tbody>
             </table>
           </div>

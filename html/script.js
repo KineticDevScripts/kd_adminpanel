@@ -1,8 +1,7 @@
 let playerSettings = {};
-let selectedPlayerId = null; // Store the selected player's ID
-let selectedResource = null; // Store the selected resource's Name
+let selectedPlayerId = null;
+let selectedResource = null; 
 
-// Handle messages from Lua
 window.addEventListener("message", (event) => {
   const data = event.data;
 
@@ -16,12 +15,9 @@ window.addEventListener("message", (event) => {
     updatePlayerTable(data.players);
   } else if (data.action === "updateResourceList") {
     updateResourceTable(data.resources);
-  } else if (data.action === "updatePlayerCount") {
-    const playerCount = data.playerCount;
-    document.getElementById('final-option-player-count').textContent = `Total Players: ${playerCount}`;
   } else if (data.action === "getServerData") {
     const data = data.data;
-    document.getElementById('server-status').innerText = data.status;
+    document.getElementById('resource-count').innerText = data.resourceCount;
     document.getElementById('player-count').innerText = data.playerCount + ' Players';
     document.getElementById('server-uptime').innerText = data.uptime;
     document.getElementById('server-version').innerText = data.version;
@@ -29,7 +25,6 @@ window.addEventListener("message", (event) => {
     const log = data.log;
         const tableBody = document.getElementById('logs-table-body');
 
-        // Create a new table row
         const row = document.createElement('tr');
         row.innerHTML = `
             <td>${log.timestamp}</td>
@@ -38,19 +33,44 @@ window.addEventListener("message", (event) => {
             <td>${log.target}</td>
             <td>${log.details}</td>
         `;
-        tableBody.appendChild(row); // Add the new row to the table
+        tableBody.appendChild(row); 
   }
 });
 
-// Close UI When Esc Key Pressed
 document.addEventListener("keydown", function (event) {
   if (event.key === "Escape") {
-      fetch(`https://${GetParentResourceName()}/closeMenu`, {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({})
+      closeMenu()
+  }
+});
+
+document.addEventListener("DOMContentLoaded", function () {
+  const searchInput = document.getElementById("resourceSearch");
+  const resourceTableBody = document.querySelector("#resources-table tbody");
+
+  if (!searchInput || !resourceTableBody) {
+      console.error("Search input or resource table body not found.");
+      return;
+  }
+
+  function filterResources() {
+      const query = searchInput.value.toLowerCase();
+      const rows = resourceTableBody.querySelectorAll("tr");
+
+      rows.forEach(row => {
+          const resourceName = row.querySelector(".resources-name").textContent.toLowerCase();
+          const resourceState = row.querySelector(".resources-state").textContent.toLowerCase();
+          if (resourceName.includes(query)) {
+              row.style.display = "";
+          } else if (resourceState.includes(query)) {
+              row.style.display = "";
+          } else {
+              row.style.display = "none";
+          }
       });
   }
+
+  searchInput.addEventListener("input", filterResources);
+  updateServerData();
 });
 
 function openTab(tabId) {
@@ -71,25 +91,82 @@ function openTab(tabId) {
   }
 }
 
+// Dashboard tab
 function updateServerData() {
-  // Send request to Lua to get real-time server data
   fetchServerData();
 }
 
 function fetchServerData() {
-  // Trigger NUI message to fetch server data
   fetch(`https://${GetParentResourceName()}/getServerData`, {
     method: 'POST',
     body: JSON.stringify({ action: 'getServerData' })
   }).then(response => response.json()).then(data => {
-    // Update server data in the UI
-    document.getElementById('server-status').innerText = data.status;
+    document.getElementById('resource-count').innerText = data.resourceCount;
     document.getElementById('player-count').innerText = data.playerCount + ' Players';
     document.getElementById('server-uptime').innerText = data.uptime;
     document.getElementById('server-version').innerText = data.version;
   }).catch(err => {
     console.error('Error fetching server data:', err);
   });
+}
+
+// End Dashboard tab
+
+// Admin Actions tab
+function openSelfMoneyDialog() {
+  document.getElementById("dialog").classList.add("active");
+}
+
+function closeSelfMoneyDialog() {
+  document.getElementById("dialog").classList.remove("active");
+}
+
+function openSelfItemDialog() {
+  document.getElementById("self-item-dialog").classList.add("active");
+}
+
+function closeSelfItemDialog() {
+  document.getElementById("self-item-dialog").classList.remove("active");
+}
+
+function openSpawnCarDialog() {
+  document.getElementById("spawn-car-dialog").classList.add("active");
+}
+
+function closeSpawnCarDialog() {
+  document.getElementById("spawn-car-dialog").classList.remove("active");
+}
+
+function unbanDialog() {
+  document.getElementById("unban-dialog").classList.add("active");
+}
+
+function closeUnbanDialog() {
+  document.getElementById("unban-dialog").classList.remove("active");
+}
+
+function announcementDialog() {
+  document.getElementById("announcement-dialog").classList.add("active");
+}
+
+function closeAnnouncementDialog() {
+  document.getElementById("announcement-dialog").classList.remove("active");
+}
+
+function coordsDialog() {
+  document.getElementById("coords-dialog").classList.add("active");
+}
+
+function closeCoordsDialog() {
+  document.getElementById("coords-dialog").classList.remove("active");
+}
+
+function tpCoordsDialog() {
+  document.getElementById("tpCoords-dialog").classList.add("active");
+}
+
+function closeTpDialog() {
+  document.getElementById("tpCoords-dialog").classList.remove("active");
 }
 
 function selfRevive() {
@@ -100,49 +177,182 @@ function selfHeal() {
   fetch(`https://${GetParentResourceName()}/selfHeal`, { method: "POST" });
 }
 
-document.addEventListener("DOMContentLoaded", function () {
-    const searchInput = document.getElementById("resourceSearch");
-    const resourceTableBody = document.querySelector("#resources-table tbody");
+function confirmAmount() {
+  let account = document.getElementById("accountType").value;
+  let amount = document.getElementById("itemAmount").value;
+  amount = parseInt(amount, 10);
+  
+  if (!amount || amount < 1) {
+      alert("Please enter a valid amount!");
+      return;
+  }
 
-    if (!searchInput || !resourceTableBody) {
-        console.error("Search input or resource table body not found.");
-        return;
-    }
+  fetch(`https://${GetParentResourceName()}/giveSelfMoney`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ amount: amount, account: account })
+  });
 
-    // Function to filter resources
-    function filterResources() {
-        const query = searchInput.value.toLowerCase();
-        const rows = resourceTableBody.querySelectorAll("tr");
+  closeSelfMoneyDialog();
+}
 
-        rows.forEach(row => {
-            const resourceName = row.querySelector(".resources-name").textContent.toLowerCase();
-            const resourceState = row.querySelector(".resources-state").textContent.toLowerCase();
-            if (resourceName.includes(query)) {
-                row.style.display = "";
-            } else if (resourceState.includes(query)) {
-                row.style.display = "";
-            } else {
-                row.style.display = "none";
-            }
-        });
-    }
+function confirmSelfItem() {
+  let item = document.getElementById("selfItemName").value;
+  let amount = document.getElementById("selfItemQuantity").value;
+  amount = parseInt(amount, 10);
+  
+  if (!amount || amount < 1) {
+    alert("Please enter a valid amount!");
+    return;
+  }
 
-    // Listen for input changes
-    searchInput.addEventListener("input", filterResources);
-    updateServerData();
-});
+  fetch(`https://${GetParentResourceName()}/giveSelfItem`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ item: item, amount: amount })
+  });
 
+  closeSelfItemDialog();
+}
 
-function fetchPlayers() {
-  fetch("https://kd_adminpanel/requestPlayers", {
+function toggleNoClip() {
+  fetch(`https://${GetParentResourceName()}/toggleNoClip`, { method: "POST" });
+  
+  // setTimeout(() => {
+  //   closeMenu();
+  // }, 500); 
+}
+
+function toggleInvisibility() {
+  fetch(`https://${GetParentResourceName()}/toggleInvisibility`, { method: "POST" });
+}
+
+function toggleGodMode() {
+  fetch(`https://${GetParentResourceName()}/toggleGodMode`, { method: "POST" });
+}
+
+function confirmSpawnCar() {
+  let model = document.getElementById("carModel").value.trim(); 
+
+  if (model.length === 0) {
+    console.error("Car model is required.");
+  } else {
+    fetch(`https://${GetParentResourceName()}/spawnCar`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ model: model })
+    });
+  }
+
+  closeSpawnCarDialog();
+}
+
+function deleteVehicle() {
+  fetch("https://kd_adminpanel/deleteVehicle", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({})
+  }); 
+}
+
+function repairVehicle() {
+  fetch(`https://${GetParentResourceName()}/repairVehicle`, { method: "POST" });
+}
+
+function confirmUnban() {
+  let license = document.getElementById("license").value;
+
+  if (license.length === 0) {
+    console.error("Player license is required.");
+  } else {
+    fetch(`https://${GetParentResourceName()}/unbanPlayer`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ license: license })
+    });
+  }
+
+  closeUnbanDialog();
+}
+
+function confirmAnnouncement() {
+  let msg = document.getElementById("announcement").value;
+
+  if (msg.length === 0) {
+    console.error("Announcement message is required.");
+  } else {
+    fetch(`https://${GetParentResourceName()}/announcement`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ msg: msg })
+    });
+  }
+
+  closeAnnouncementDialog();
+}
+
+function deleteVehicles() {
+  fetch("https://kd_adminpanel/deleteVehicles", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({})
+  }); 
+}
+
+function deleteObjects() {
+  fetch("https://kd_adminpanel/deleteObjects", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({})
   });
 }
 
-function fetchResources() {
-  fetch("https://kd_adminpanel/requestResources", {
+function deletePeds() {
+  fetch("https://kd_adminpanel/deletePeds", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({})
+  });
+}
+
+function confirmCoords() {
+  let type = document.getElementById("coordsType").value;
+  
+  if (type.length === 0) {
+      alert("Please select a valid type!");
+      return;
+  }
+
+  fetch(`https://${GetParentResourceName()}/copyCoords`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ type: type })
+  });
+
+  closeCoordsDialog();
+}
+
+function confirmTp() {
+  const input = document.getElementById("tp_vec3").value.trim();
+  const coords = input.split(",").map(num => parseFloat(num.trim()));
+
+  if (coords.length === 3 && coords.every(num => !isNaN(num))) {
+      fetch(`https://${GetParentResourceName()}/tpToCoords`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ coords: coords })
+      });
+      closeTpDialog();
+  } else {
+      alert("Invalid format! Use: x, y, z (e.g., 200.0, 300.0, 50.0)");
+  }
+}
+
+// End Admin Actions tab
+
+// Players Tab
+function fetchPlayers() {
+  fetch("https://kd_adminpanel/requestPlayers", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({})
@@ -175,6 +385,148 @@ function updatePlayerTable(players) {
   });
 }
 
+function selectPlayer(playerId, playerName) {
+  openQuickActionsMenu(playerId, playerName)
+}
+
+function openQuickActionsMenu(playerId, playerName) {
+  selectedPlayerId = playerId;
+  document.getElementById('selected-player-name').textContent = `Selected Player: ${playerName}`;
+  document.getElementById('quick-actions-menu').style.display = 'block';
+}
+
+function closeQuickActionsMenu() {
+  document.getElementById('quick-actions-menu').style.display = 'none';
+}
+
+function openKickDialog() {
+  document.getElementById("kick-dialog").classList.add("active");
+}
+
+function closeKickDialog() {
+  document.getElementById("kick-dialog").classList.remove("active");
+}
+
+function openBanDialog() {
+  document.getElementById("ban-dialog").classList.add("active");
+}
+
+function closeBanDialog() {
+  document.getElementById("ban-dialog").classList.remove("active");
+}
+
+function openItemDialog() {
+  document.getElementById("item-dialog").classList.add("active");
+}
+
+function closeItemDialog() {
+  document.getElementById("item-dialog").classList.remove("active");
+}
+
+function confirmKick() {
+  let reason = document.getElementById("kickReason").value.trim(); 
+
+  if (reason.length === 0) {
+    console.error("Kick reason is required.");
+  } else {
+    fetch(`https://${GetParentResourceName()}/kickPlayer`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ playerId: selectedPlayerId, reason: reason })
+    });
+  }
+
+  closeKickDialog();
+}
+
+function confirmBan() {
+  let reason = document.getElementById("banReason").value.trim(); 
+  let time = document.getElementById("banTime").value;
+
+  if (reason.length === 0) {
+    console.error("Ban reason is required.");
+  } else if (time.lenth === 0) {
+    console.error("Ban time is required.");
+  } else {
+    fetch(`https://${GetParentResourceName()}/banPlayer`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ playerId: selectedPlayerId, reason: reason, time: time })
+    });
+  }
+
+  closeBanDialog();
+}
+
+function gotoPlayer() {
+  if (selectedPlayerId) {
+      console.log(`Teleporting to player with ID: ${selectedPlayerId}`);
+      
+      fetch(`https://${GetParentResourceName()}/gotoPlayer`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ playerId: selectedPlayerId })
+      });
+  }
+  closeQuickActionsMenu();
+}
+
+function revivePlayer() {
+  if (selectedPlayerId) {
+      console.log(`Revivng player with ID: ${selectedPlayerId}`);
+
+      fetch(`https://${GetParentResourceName()}/revivePlayer`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ playerId: selectedPlayerId })
+      });
+  }
+  closeQuickActionsMenu();
+}
+
+function healPlayer() {
+  if (selectedPlayerId) {
+      console.log(`Healing player with ID: ${selectedPlayerId}`);
+      
+      fetch(`https://${GetParentResourceName()}/healPlayer`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ playerId: selectedPlayerId })
+      });
+  }
+  closeQuickActionsMenu();
+}
+
+function confirmItem() {
+  let item = document.getElementById("itemName").value;
+  let amount = document.getElementById("itemQuantity").value;
+  amount = parseInt(amount, 10);
+  
+  if (!amount || amount < 1) {
+    alert("Please enter a valid amount!");
+    return;
+  }
+
+  fetch(`https://${GetParentResourceName()}/givePlayerItem`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ playerId: selectedPlayerId, item: item, amount: amount })
+  });
+
+  closeItemDialog();
+}
+
+// End Players tab
+
+// Resources tab
+function fetchResources() {
+  fetch("https://kd_adminpanel/requestResources", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({})
+  });
+}
+
 function updateResourceTable(resources) {
   let tableBody = document.querySelector("#resources-table tbody");
   tableBody.innerHTML = "";
@@ -198,24 +550,13 @@ function updateResourceTable(resources) {
   });
 }
 
-function selectPlayer(playerId, playerName) {
-  openQuickActionsMenu(playerId, playerName)
-}
-
 function selectResource(resourceName, resourceState) {
   openManageResourceMenu(resourceName, resourceState)
 }
 
-// Function to open the quick actions menu with the selected player's info
-function openQuickActionsMenu(playerId, playerName) {
-  selectedPlayerId = playerId;
-  document.getElementById('selected-player-name').textContent = `Selected Player: ${playerName}`;
-  document.getElementById('quick-actions-menu').style.display = 'block';
-}
-
 function openManageResourceMenu(resourceName, resourceState) {
   selectedResource = resourceName;
-  document.getElementById('selected-resource-name').textContent = `Selected Resource: ${resourceName}`;
+  document.getElementById('selected-resource-name').textContent = `Selected Resource: ${resourceName} | ${resourceState}`;
   document.getElementById('manage-resource-menu').style.display = 'block';
 }
 
@@ -259,159 +600,7 @@ function stopResource() {
   fetchResources()
 }
 
-// Close the quick actions menu
-function closeQuickActionsMenu() {
-  document.getElementById('quick-actions-menu').style.display = 'none';
-}
-
-function banPlayer() {
-  if (selectedPlayerId) {
-      console.log(`Banning player with ID: ${selectedPlayerId}`);
-      // Implement ban logic here (e.g., send to server)
-  }
-  closeQuickActionsMenu();
-}
-
-function gotoPlayer() {
-  if (selectedPlayerId) {
-      console.log(`Teleporting to player with ID: ${selectedPlayerId}`);
-      
-      fetch(`https://${GetParentResourceName()}/gotoPlayer`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ playerId: selectedPlayerId })
-      });
-  }
-  closeQuickActionsMenu();
-}
-
-function revivePlayer() {
-  if (selectedPlayerId) {
-      console.log(`Revivng player with ID: ${selectedPlayerId}`);
-
-      fetch(`https://${GetParentResourceName()}/revivePlayer`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ playerId: selectedPlayerId })
-      });
-  }
-  closeQuickActionsMenu();
-}
-
-function healPlayer() {
-  if (selectedPlayerId) {
-      console.log(`Healing player with ID: ${selectedPlayerId}`);
-      
-      fetch(`https://${GetParentResourceName()}/healPlayer`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ playerId: selectedPlayerId })
-      });
-  }
-  closeQuickActionsMenu();
-}
-
-function openSelfMoneyDialog() {
-  document.getElementById("dialog").classList.add("active");
-}
-
-function closeSelfMoneyDialog() {
-  document.getElementById("dialog").classList.remove("active");
-}
-
-function openItemDialog() {
-  document.getElementById("item-dialog").classList.add("active");
-}
-
-function closeItemDialog() {
-  document.getElementById("item-dialog").classList.remove("active");
-}
-
-function openKickDialog() {
-  document.getElementById("kick-dialog").classList.add("active");
-}
-
-function closeKickDialog() {
-  document.getElementById("kick-dialog").classList.remove("active");
-}
-
-function openSpawnCarDialog() {
-  document.getElementById("spawn-car-dialog").classList.add("active");
-}
-
-function closeSpawnCarDialog() {
-  document.getElementById("spawn-car-dialog").classList.remove("active");
-}
-
-function confirmAmount() {
-  let amount = document.getElementById("itemAmount").value;
-  amount = parseInt(amount, 10);
-  
-  if (!amount || amount < 1) {
-      alert("Please enter a valid amount!");
-      return;
-  }
-
-  // Trigger a FiveM event (replace 'yourEventName' with your actual event)
-  fetch(`https://${GetParentResourceName()}/giveSelfMoney`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ amount: amount })
-  });
-
-  closeSelfMoneyDialog();
-}
-
-function confirmItem() {
-  let item = document.getElementById("itemName").value;
-  let amount = document.getElementById("itemQuantity").value;
-  amount = parseInt(amount, 10);
-  
-  if (!amount || amount < 1) {
-    alert("Please enter a valid amount!");
-    return;
-  }
-
-  fetch(`https://${GetParentResourceName()}/givePlayerItem`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ playerId: selectedPlayerId, item: item, amount: amount })
-  });
-
-  closeItemDialog();
-}
-
-function confirmKick() {
-  let reason = document.getElementById("kickReason").value.trim(); // Remove extra spaces
-
-  if (reason.length === 0) {
-    console.error("Kick reason is required.");
-  } else {
-    fetch(`https://${GetParentResourceName()}/kickPlayer`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ playerId: selectedPlayerId, reason: reason })
-    });
-  }
-
-  closeKickDialog();
-}
-
-function confirmSpawnCar() {
-  let model = document.getElementById("carModel").value.trim(); // Remove extra spaces
-
-  if (model.length === 0) {
-    console.error("Car model is required.");
-  } else {
-    fetch(`https://${GetParentResourceName()}/spawnCar`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ model: model })
-    });
-  }
-
-  closeSpawnCarDialog();
-}
+// End Resources tab
 
 function updatePrimaryColor(color) {
   document.querySelector(".sidebar").style.backgroundColor = color;
@@ -426,14 +615,13 @@ function updatePrimaryColor(color) {
   document.querySelector(".resource-header").style.borderBottom = `6px solid ${color}`;
   document.querySelector(".title-logs").style.borderBottom = `6px solid ${color}`;
   document.querySelector(".settings-header").style.borderBottom = `6px solid ${color}`;
-  document.querySelector(".dashboard-btn").style.backgroundColor = color;
-    document.querySelector(".dashboard-btn2").style.backgroundColor = color;
-    document.querySelector(".dashboard-btn3").style.backgroundColor = color;
-    document.querySelector(".dashboard-btn4").style.backgroundColor = color;
-    document.querySelector(".dashboard-btn5").style.backgroundColor = color;
-    document.querySelector(".dashboard-btn6").style.backgroundColor = color;
-    document.querySelector(".dashboard-btn7").style.backgroundColor = color;
-    document.querySelector(".dashboard-btn8").style.backgroundColor = color;
+
+  document.querySelectorAll("[class^='dashboard-btn']").forEach(btn => {
+    btn.style.background = color;
+  });
+
+  document.querySelector(".table-row-online").style.background = color;
+  document.querySelector(".table-row-resources").style.background = color;
 
   playerSettings.primaryColor = color;
   saveSettingsToServer();
@@ -442,7 +630,7 @@ function updatePrimaryColor(color) {
 function updateSecondaryColor(color) {
     document.querySelector(".sidebar-header").style.borderBottom = `6px solid ${color}`;
     document.querySelector(".menu").style.backgroundColor = color;
-    document.querySelector(".dashboard").style.backgroundColor = color;
+    document.querySelector(".dashboardB").style.backgroundColor = color;
     document.querySelector(".server-data").style.backgroundColor = color;
     document.querySelector(".players").style.backgroundColor = color;
     document.querySelector(".resources").style.backgroundColor = color;
@@ -457,6 +645,17 @@ function updateSecondaryColor(color) {
     document.querySelector(".restart-btn").style.backgroundColor = color;
     document.querySelector(".start-btn").style.backgroundColor = color;
     document.querySelector(".stop-btn").style.backgroundColor = color;
+
+    document.querySelectorAll("[class^='dashboard-btn']").forEach(btn => {
+      btn.style.border = `3px solid ${color}`;
+      btn.style.boxShadow = `0px 0px 10px ${color}`;
+    });
+
+    document.querySelector(".edit-pos-button").style.border = `3px solid ${color}`;
+    document.querySelector(".edit-pos-button").style.boxShadow = `0px 0px 10px ${color}`;
+
+    document.querySelector(".save-pos-button").style.border = `3px solid ${color}`;
+    document.querySelector(".save-pos-button").style.boxShadow = `0px 0px 10px ${color}`;
 
     playerSettings.secondaryColor = color;
     saveSettingsToServer();
@@ -527,7 +726,7 @@ function applySettings(settings) {
   document.querySelector(".dashboard-header").style.borderBottom = `6px solid ${settings.primaryColor}`;
   document.querySelector(".server-data-header").style.borderBottom = `6px solid ${settings.primaryColor}`;
   document.querySelector(".close-button").style.backgroundColor = settings.primaryColor;
-  document.querySelector(".dashboard").style.backgroundColor = settings.secondaryColor;
+  document.querySelector(".dashboardB").style.backgroundColor = settings.secondaryColor;
   document.querySelector(".server-data").style.backgroundColor = settings.secondaryColor;
   document.querySelector(".players").style.backgroundColor = settings.secondaryColor;
   document.querySelector(".resources").style.backgroundColor = settings.secondaryColor;
@@ -537,15 +736,14 @@ function applySettings(settings) {
   document.querySelector(".resource-header").style.borderBottom = `6px solid ${settings.primaryColor}`;
   document.querySelector(".title-logs").style.borderBottom = `6px solid ${settings.primaryColor}`;
   document.querySelector(".settings-header").style.borderBottom = `6px solid ${settings.primaryColor}`;
+  document.querySelector(".table-row-online").style.background = settings.primaryColor;
+  document.querySelector(".table-row-resources").style.background = settings.primaryColor;
 
-  document.querySelector(".dashboard-btn").style.backgroundColor = settings.primaryColor;
-  document.querySelector(".dashboard-btn2").style.backgroundColor = settings.primaryColor;
-  document.querySelector(".dashboard-btn3").style.backgroundColor = settings.primaryColor;
-  document.querySelector(".dashboard-btn4").style.backgroundColor = settings.primaryColor;
-  document.querySelector(".dashboard-btn5").style.backgroundColor = settings.primaryColor;
-  document.querySelector(".dashboard-btn6").style.backgroundColor = settings.primaryColor;
-  document.querySelector(".dashboard-btn7").style.backgroundColor = settings.primaryColor;
-  document.querySelector(".dashboard-btn8").style.backgroundColor = settings.primaryColor;
+  document.querySelectorAll("[class^='dashboard-btn']").forEach(btn => {
+    btn.style.background = settings.primaryColor;
+    btn.style.border = `3px solid ${settings.secondaryColor}`;
+    btn.style.boxShadow = `0px 0px 10px ${settings.secondaryColor}`;
+  });
 
   document.querySelector(".quick-actions-menu").style.backgroundColor = settings.primaryColor;
   document.querySelector(".pkick-btn").style.backgroundColor = settings.secondaryColor;
@@ -563,6 +761,12 @@ function applySettings(settings) {
   document.querySelector(".menu").style.backgroundColor = settings.secondaryColor;
   document.querySelector(".edit-pos-button").style.backgroundColor = settings.primaryColor;
   document.querySelector(".save-pos-button").style.backgroundColor = settings.primaryColor;
+
+  document.querySelector(".edit-pos-button").style.border = `3px solid ${settings.secondaryColor}`;
+  document.querySelector(".edit-pos-button").style.boxShadow = `0px 0px 10px ${settings.secondaryColor}`;
+
+  document.querySelector(".save-pos-button").style.border = `3px solid ${settings.secondaryColor}`;
+  document.querySelector(".save-pos-button").style.boxShadow = `0px 0px 10px ${settings.secondaryColor}`;
 
   document.getElementById("menu-container").style.height = settings.menuSize + "%";
   document.getElementById("menu-container").style.width = settings.menuSize + "%";

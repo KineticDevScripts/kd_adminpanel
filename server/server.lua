@@ -1,22 +1,59 @@
 ESX = exports["es_extended"]:getSharedObject()
 
-local playerSettings = {}
+local playerSettings = {} 
+
+MySQL.ready(function()
+    Wait(1000)
+    local success, error = pcall(MySQL.scalar.await, 'SELECT 1 FROM `kd_bans`')
+
+    if not success then
+        MySQL.query([[
+            CREATE TABLE `kd_bans` (
+                `author` varchar(40) DEFAULT NULL,
+                `player` varchar(40) DEFAULT NULL,
+                `license` varchar(50) DEFAULT NULL,
+                `ip` varchar(25) DEFAULT NULL,
+                `discord` varchar(40) DEFAULT NULL,
+                `reason` varchar(100) DEFAULT NULL,
+                `ban_time` int(50) NOT NULL,
+                `exp_time` varchar(40) NOT NULL
+            ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+        ]])
+    end
+
+    if not success then
+        print('^2[success]^7 database was created successfully!')
+    end
+end)
+
+ESX.RegisterServerCallback('kd_adminpanel:checkGroup', function(source, cb)
+    local xPlayer = ESX.GetPlayerFromId(source)
+    local group = xPlayer.getGroup()
+
+    if checkGroup(source, false) then
+        cb(true, group)
+    else 
+        cb(false)
+    end
+end)
+
+function checkGroup(player, doAction)
+    local xPlayer = ESX.GetPlayerFromId(player)
+    local playerGroup = xPlayer.getGroup()
+
+    if Config.groups[playerGroup] then
+        return true
+    end
+
+    if doAction then
+        xPlayer.kick('no group')
+    end
+
+    return false
+end
 
 function sendLog(timestamp, action, admin, target, details)
     TriggerClientEvent('kd_adminpanel:addLog', -1, timestamp, action, admin, target, details)
-end
-
-if Config.commands['openMenu'].enabled then
-    lib.addCommand(Config.commands['openMenu'].name, {
-        help = Config.commands['openMenu'].help,
-        params = {},
-        restricted = Config.commands['openMenu'].restricted
-    }, function(source, args, raw)
-        local timestamp = os.date("%Y-%m-%d %H:%M:%S")
-
-        sendLog(timestamp, 'Open Menu', GetPlayerName(source), 'None', 'Menu Accessed By Command')
-        TriggerClientEvent("kd_adminpanel:openMenu", source)
-    end)
 end
 
 function loadSettings()
@@ -42,8 +79,8 @@ AddEventHandler("kd_adminpanel:getPlayerSettings", function()
         playerSettings[identifier] = {
             primaryColor = "#ff0000",
             secondaryColor = "#0d0c0c",
-            menuSize = 70,
-            menuPosition = { top = 100, left = 100 }
+            menuSize = 65,
+            menuPosition = { top = 178, left = 436 }
         }
         TriggerClientEvent("kd_adminpanel:sendPlayerSettings", src, playerSettings[identifier])
     end
@@ -105,92 +142,304 @@ AddEventHandler('kd_adminpanel:getResources', function()
     TriggerClientEvent('kd_adminpanel:sendResources', source, resourceList)
 end)
 
-RegisterNetEvent("kd_adminpanel:manageResource")
-AddEventHandler("kd_adminpanel:manageResource", function(resource, action)
-    if action == 'restart' then
-        restartResource(resource)
-    elseif action == 'start' then
-        StartResource(resource)
-    elseif action == 'stop' then
-        StopResource(resource)
+RegisterNetEvent("kd_adminpanel:selfRevive")
+AddEventHandler("kd_adminpanel:selfRevive", function()
+    if checkGroup(source, true) then
+        local src = source
+        local name = GetPlayerName(src)
+        local xPlayer = ESX.GetPlayerFromId(src)
+        local timestamp = os.date("%Y-%m-%d %H:%M:%S")
+    
+        sendLog(timestamp, 'Self Revive', GetPlayerName(src), 'None', 'Admin Revived Themself')
+        Utils.notify("Success", 'You have successfully revived yourself', 'success', source)
+    end
+end)
+
+RegisterNetEvent("kd_adminpanel:selfHeal")
+AddEventHandler("kd_adminpanel:selfHeal", function()
+    if checkGroup(source, true) then
+        local src = source
+        local name = GetPlayerName(src)
+        local xPlayer = ESX.GetPlayerFromId(src)
+        local timestamp = os.date("%Y-%m-%d %H:%M:%S")
+    
+        sendLog(timestamp, 'Self Heal', GetPlayerName(src), 'None', 'Admin Healed Themself')
+        Utils.notify("Success", 'You have successfully healed yourself', 'success', source)
+    end
+end)
+
+RegisterNetEvent("kd_adminpanel:giveSelfMoney")
+AddEventHandler("kd_adminpanel:giveSelfMoney", function(account, amount)
+    if checkGroup(source, true) then
+        local src = source
+        local name = GetPlayerName(src)
+        local xPlayer = ESX.GetPlayerFromId(src)
+        local timestamp = os.date("%Y-%m-%d %H:%M:%S")
+    
+        if account == 'money' then
+            sendLog(timestamp, 'Self Money', GetPlayerName(source), 'None', 'Admin Gave Themself $'..lib.math.groupdigits(amount, ','))
+            xPlayer.addAccountMoney(account, amount)
+            Utils.notify("Success", 'You have successfully gave yourself $'..lib.math.groupdigits(amount, ','), 'success', source)
+        elseif account == 'bank' then
+            sendLog(timestamp, 'Self Bank', GetPlayerName(source), 'None', 'Admin Added $'..lib.math.groupdigits(amount, ',')..' To Their Bank Account')
+            xPlayer.addAccountMoney(account, amount)
+            Utils.notify("Success", 'You have successfully added $'..lib.math.groupdigits(amount, ',')..' to your bank account', 'success', source)
+        else
+            Utils.notify("Error", 'Invalid account type', 'error', source)
+        end
+    end
+end)
+
+RegisterNetEvent("kd_adminpanel:giveSelfItem")
+AddEventHandler("kd_adminpanel:giveSelfItem", function(item, amount)
+    if checkGroup(source, true) then
+        local src = source
+        local name = GetPlayerName(src)
+        local xPlayer = ESX.GetPlayerFromId(src)
+        local timestamp = os.date("%Y-%m-%d %H:%M:%S")
+    
+        if xPlayer.canCarryItem(item, amount) then
+            xPlayer.addInventoryItem(item, amount)
+            sendLog(timestamp, 'Self Item', GetPlayerName(source), 'None', 'Admin Gave Themself '..amount..'x '..item)
+            Utils.notify("Success", 'You have successfully gave yourself '..amount..'x '..item, 'success', source)
+        else
+            Utils.notify("Error", 'You cannot hold all that', 'error', source)
+        end
+    end
+end)
+
+RegisterNetEvent("kd_adminpanel:toggleNoClip")
+AddEventHandler("kd_adminpanel:toggleNoClip", function()
+    if checkGroup(source, true) then
+        local src = source
+        local name = GetPlayerName(src)
+        local xPlayer = ESX.GetPlayerFromId(src)
+        local timestamp = os.date("%Y-%m-%d %H:%M:%S")
+    
+        sendLog(timestamp, 'Toggle NoClip', GetPlayerName(source), 'None', 'Admin Has Toggled NoClip')
+        Utils.notify("Success", 'You have successfully toggled NoClip', 'success', source)
+    end
+end)
+
+RegisterNetEvent("kd_adminpanel:toggleInvisibility")
+AddEventHandler("kd_adminpanel:toggleInvisibility", function()
+    if checkGroup(source, true) then
+        local src = source
+        local name = GetPlayerName(src)
+        local xPlayer = ESX.GetPlayerFromId(src)
+        local timestamp = os.date("%Y-%m-%d %H:%M:%S")
+    
+        sendLog(timestamp, 'Toggle Invisibility', GetPlayerName(source), 'None', 'Admin Has Toggled Invisibility')
+        Utils.notify("Success", 'You have successfully toggled Invisibility', 'success', source)
+    end
+end)
+
+RegisterNetEvent("kd_adminpanel:toggleGodMode")
+AddEventHandler("kd_adminpanel:toggleGodMode", function()
+    if checkGroup(source, true) then
+        local src = source
+        local name = GetPlayerName(src)
+        local xPlayer = ESX.GetPlayerFromId(src)
+        local timestamp = os.date("%Y-%m-%d %H:%M:%S")
+    
+        sendLog(timestamp, 'Toggle GodMode', GetPlayerName(source), 'None', 'Admin Has Toggled GodMode')
+        Utils.notify("Success", 'You have successfully toggled GodMode', 'success', source)
+    end
+end)
+
+RegisterNetEvent("kd_adminpanel:spawnCar")
+AddEventHandler("kd_adminpanel:spawnCar", function(model)
+    if checkGroup(source, true) then
+        local src = source
+        local name = GetPlayerName(src)
+        local xPlayer = ESX.GetPlayerFromId(src)
+        local timestamp = os.date("%Y-%m-%d %H:%M:%S")
+    
+        sendLog(timestamp, 'Vehicle Spawned', GetPlayerName(source), 'None', 'Admin Has Spawned: '..model)
+        Utils.notify("Success", 'You have successfully spawned an '..model, 'success', source)
+    end
+end)
+
+RegisterNetEvent("kd_adminpanel:deleteVehicle")
+AddEventHandler("kd_adminpanel:deleteVehicle", function(model)
+    if checkGroup(source, true) then
+        local src = source
+        local name = GetPlayerName(src)
+        local xPlayer = ESX.GetPlayerFromId(src)
+        local timestamp = os.date("%Y-%m-%d %H:%M:%S")
+    
+        sendLog(timestamp, 'Vehicle Deleted', GetPlayerName(source), 'None', 'Admin Has Deleted Their Vehicle')
+        Utils.notify("Success", 'You have successfully deleted your vehicle', 'success', source)
+    end
+end)
+
+RegisterNetEvent("kd_adminpanel:repairVehicle")
+AddEventHandler("kd_adminpanel:repairVehicle", function(model)
+    if checkGroup(source, true) then
+        local src = source
+        local name = GetPlayerName(src)
+        local xPlayer = ESX.GetPlayerFromId(src)
+        local timestamp = os.date("%Y-%m-%d %H:%M:%S")
+    
+        sendLog(timestamp, 'Vehicle Repaired', GetPlayerName(source), 'None', 'Admin Has Repaired Their Vehicle')
+        Utils.notify("Success", 'You have successfully repaired your vehicle', 'success', source)
+    end
+end)
+
+RegisterNetEvent("kd_adminpanel:unbanPlayer")
+AddEventHandler("kd_adminpanel:unbanPlayer", function(license)
+    if checkGroup(source, true) then
+        local src = source
+        local xPlayer = ESX.GetPlayerFromIdentifier(license)
+        local timestamp = os.date("%Y-%m-%d %H:%M:%S")
+    
+        sendLog(timestamp, 'Player Unbanned', GetPlayerName(source), xPlayer.getName(), 'Admin Unbanned Player')
+        Utils.notify("Success", 'You have successfully unbanned license: '..license, 'success', source)
+    end
+end)
+
+RegisterNetEvent("kd_adminpanel:announcement")
+AddEventHandler("kd_adminpanel:announcement", function(msg)
+    if checkGroup(source, true) then
+        local src = source
+        local name = GetPlayerName(src)
+        local xPlayer = ESX.GetPlayerFromId(src)
+        local timestamp = os.date("%Y-%m-%d %H:%M:%S")
+    
+        sendLog(timestamp, 'Announcement', GetPlayerName(source), 'None', 'Admin Announcement: '..msg)
+        Utils.notify("Success", 'You have successfully made a server wide announcement', 'success', source)
+    
+        Utils.announcement(msg)
+    end
+end)
+
+RegisterNetEvent("kd_adminpanel:deleteVehicles")
+AddEventHandler("kd_adminpanel:deleteVehicles", function(vehAmount)
+    if checkGroup(source, true) then
+        local src = source
+        local name = GetPlayerName(src)
+        local xPlayer = ESX.GetPlayerFromId(src)
+        local timestamp = os.date("%Y-%m-%d %H:%M:%S")
+    
+        sendLog(timestamp, 'Vehicle Wipe', GetPlayerName(source), 'None', 'Admin Has Wiped '..vehAmount..'x Unoccupied Vehicles')
+        Utils.notify("Success", 'You have successfully wiped '..vehAmount..'x unoccupied vehicles', 'success', source)
+    end
+end)
+
+RegisterNetEvent("kd_adminpanel:deleteObjects")
+AddEventHandler("kd_adminpanel:deleteObjects", function(objAmount)
+    if checkGroup(source, true) then
+        local src = source
+        local name = GetPlayerName(src)
+        local xPlayer = ESX.GetPlayerFromId(src)
+        local timestamp = os.date("%Y-%m-%d %H:%M:%S")
+    
+        sendLog(timestamp, 'Object Wipe', GetPlayerName(source), 'None', 'Admin Has Wiped '..objAmount..'x Objects')
+        Utils.notify("Success", 'You have successfully wiped '..objAmount..'x objects', 'success', source)
+    end
+end)
+
+RegisterNetEvent("kd_adminpanel:deletePeds")
+AddEventHandler("kd_adminpanel:deletePeds", function(pedAmount)
+    if checkGroup(source, true) then
+        local src = source
+        local name = GetPlayerName(src)
+        local xPlayer = ESX.GetPlayerFromId(src)
+        local timestamp = os.date("%Y-%m-%d %H:%M:%S")
+    
+        sendLog(timestamp, 'Ped Wipe', GetPlayerName(source), 'None', 'Admin Has Wiped '..pedAmount..'x Peds')
+        Utils.notify("Success", 'You have successfully wiped '..pedAmount..'x peds', 'success', source)
     end
 end)
 
 RegisterNetEvent("kd_adminpanel:kickPlayer")
 AddEventHandler("kd_adminpanel:kickPlayer", function(playerId, reason)
-    local name = GetPlayerName(playerId)
-    local xPlayer = ESX.GetPlayerFromId(playerId)
+    if checkGroup(source, true) then
+        local name = GetPlayerName(playerId)
+        local xPlayer = ESX.GetPlayerFromId(playerId)
+        local timestamp = os.date("%Y-%m-%d %H:%M:%S")
+    
+        xPlayer.kick(reason)
+        sendLog(timestamp, 'Player Kicked', GetPlayerName(source), name, 'Reason: '..reason)
+        Utils.notify("Success", 'You have successfully kicked '..name..' for '..reason, 'success', source)
+    end
+end)
 
-    --xPlayer.kick(reason)
-    print('kicked '..name..' for '..reason)
+RegisterNetEvent("kd_adminpanel:banPlayer")
+AddEventHandler("kd_adminpanel:banPlayer", function(playerId, reason, time)
+    if checkGroup(source, true) then
+        local name = GetPlayerName(playerId)
+        local xPlayer = ESX.GetPlayerFromId(playerId)
+        local timestamp = os.date("%Y-%m-%d %H:%M:%S")
+    
+        --xPlayer.kick(reason)
+        sendLog(timestamp, 'Player Banned', GetPlayerName(source), name, 'Reason: '..reason..' Time: '..time)
+        Utils.notify("Success", 'You have successfully banned '..name..' for '..reason..' for '..time, 'success', source)
+    end
 end)
 
 RegisterNetEvent("kd_adminpanel:gotoPlayer")
 AddEventHandler("kd_adminpanel:gotoPlayer", function(playerId)
-    local name = GetPlayerName(playerId)
-    local xPlayer = ESX.GetPlayerFromId(playerId)
-    local xSource = ESX.GetPlayerFromId(source)
-    local targetCoords = xPlayer.getCoords(true)
-
-    xSource.setCoords(targetCoords)
+    if checkGroup(source, true) then
+        local name = GetPlayerName(playerId)
+        local xPlayer = ESX.GetPlayerFromId(playerId)
+        local xSource = ESX.GetPlayerFromId(source)
+        local targetCoords = xPlayer.getCoords(true)
+        local timestamp = os.date("%Y-%m-%d %H:%M:%S")
+    
+        xSource.setCoords(targetCoords)
+        sendLog(timestamp, 'Player Goto', GetPlayerName(source), name, 'Admin Goto Player')
+        Utils.notify("Success", 'You have successfully teleported to '..name, 'success', source)
+    end
 end)
 
 RegisterNetEvent("kd_adminpanel:revivePlayer")
 AddEventHandler("kd_adminpanel:revivePlayer", function(playerId)
-    local name = GetPlayerName(playerId)
-    local xPlayer = ESX.GetPlayerFromId(playerId)
-
-    xPlayer.triggerEvent('kni_ambulancejob:healPlayer', {revive = true})
+    if checkGroup(source, true) then
+        local name = GetPlayerName(playerId)
+        local xPlayer = ESX.GetPlayerFromId(playerId)
+        local timestamp = os.date("%Y-%m-%d %H:%M:%S")
+    
+        Utils.revivePlayer(playerId)
+        sendLog(timestamp, 'Player Revive', GetPlayerName(source), name, 'Admin Revive Player')
+        Utils.notify("Success", 'You have successfully revived '..name, 'success', source)
+    end
 end)
 
 RegisterNetEvent("kd_adminpanel:healPlayer")
 AddEventHandler("kd_adminpanel:healPlayer", function(playerId)
-    local name = GetPlayerName(playerId)
-    local xPlayer = ESX.GetPlayerFromId(playerId)
-
-    xPlayer.triggerEvent('kni_ambulancejob:healPlayer', {heal = true})
+    if checkGroup(source, true) then
+        local name = GetPlayerName(playerId)
+        local xPlayer = ESX.GetPlayerFromId(playerId)
+        local timestamp = os.date("%Y-%m-%d %H:%M:%S")
+    
+        Utils.healPlayer(playerId)
+        sendLog(timestamp, 'Player Heal', GetPlayerName(source), name, 'Admin Heal Player')
+        Utils.notify("Success", 'You have successfully healed '..name, 'success', source)
+    end
 end)
 
 RegisterNetEvent("kd_adminpanel:givePlayerItem")
 AddEventHandler("kd_adminpanel:givePlayerItem", function(playerId, item, amount)
-    local name = GetPlayerName(playerId)
-    local xPlayer = ESX.GetPlayerFromId(playerId)
-
-    xPlayer.addInventoryItem(item, amount)
+    if checkGroup(source, true) then
+        local name = GetPlayerName(playerId)
+        local xPlayer = ESX.GetPlayerFromId(playerId)
+    
+        xPlayer.addInventoryItem(item, amount)
+        sendLog(timestamp, 'Give Player Item', GetPlayerName(source), name, 'Admin Gave Player: '..amount..'x '..item)
+        Utils.notify("Success", 'You have successfully gave '..name..' '..amount..'x '..item, 'success', source)
+    end
 end)
 
-RegisterNetEvent("kd_adminpanel:selfRevive")
-AddEventHandler("kd_adminpanel:selfRevive", function(source)
-    print('add webhook on server')
-end)
-
-RegisterNetEvent("kd_adminpanel:selfHeal")
-AddEventHandler("kd_adminpanel:selfHeal", function(source)
-    print('add webhook on server')
-end)
-
-RegisterNetEvent("kd_adminpanel:giveSelfMoney")
-AddEventHandler("kd_adminpanel:giveSelfMoney", function(amount)
-    local src = source
-    local name = GetPlayerName(src)
-    local xPlayer = ESX.GetPlayerFromId(src)
-    local timestamp = os.date("%Y-%m-%d %H:%M:%S")
-
-    sendLog(timestamp, 'Self Money', GetPlayerName(source), 'None', 'Admin Gave Himself $'..lib.math.groupdigits(amount, ','))
-    xPlayer.addAccountMoney('money', amount)
-end)
-
-local lastPlayerCount = 0
-
-Citizen.CreateThread(function()
-    while true do
-        Citizen.Wait(1000) -- Check every second to detect changes in player count
-        
-        local playerCount = #GetPlayers() -- Get total number of players
-        if playerCount ~= lastPlayerCount then
-            lastPlayerCount = playerCount
-            -- Send player count to NUI only when it changes
-            TriggerClientEvent('kd_adminpanel:updatePlayerCount', -1, playerCount)
+RegisterNetEvent("kd_adminpanel:manageResource")
+AddEventHandler("kd_adminpanel:manageResource", function(resource, action)
+    if checkGroup(source, true) then
+        if action == 'restart' then
+            restartResource(resource)
+        elseif action == 'start' then
+            StartResource(resource)
+        elseif action == 'stop' then
+            StopResource(resource)
         end
     end
 end)

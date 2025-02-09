@@ -2,6 +2,9 @@ fx_version 'cerulean'
 game 'gta5'
 lua54 'yes'
 
+author 'Kinetic Dev'
+version '1.0.0'
+
 shared_scripts {
     '@es_extended/imports.lua',
     '@ox_lib/init.lua',
@@ -9,11 +12,16 @@ shared_scripts {
 }
 
 client_scripts {
-    'client/*.lua'
+    'utils/client.lua',
+    'client/*.lua',
+    'client/modules/*.lua'
 }
 
 server_scripts {
-    'server/*.lua'
+    '@oxmysql/lib/MySQL.lua',
+    'utils/server.lua',
+    'server/*.lua',
+    'server/modules/*.lua'
 }
 
 ui_page 'html/index.html'
