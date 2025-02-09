@@ -2,6 +2,8 @@
 
 A customizable admin menu for FiveM servers, allowing admins to easily perform self actions, manage players and resources, view action logs, and tailor the menu design to their preference with a sleek responsive interface.
 
+[![Discord](https://img.shields.io/badge/Discord-7289DA?style=for-the-badge&logo=discord&logoColor=white)](https://discord.gg/UzkdTXqarr)
+
 ## Features:
 
 * Dashboard:
