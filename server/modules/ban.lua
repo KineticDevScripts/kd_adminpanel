@@ -55,20 +55,19 @@ BanPlayer = function(target, time, reason, source)
     local currentTime = os.time()
     local banExp = getBanExpire(currentTime, time)
 
-    --if checkGroup(source, true) then
+    if checkGroup(source, true) then
         MySQL.insert('INSERT INTO kd_bans (author, player, license, ip, discord, reason, ban_time, exp_time) VALUES (?, ?, ?, ?, ?, ?, ?, ?)', {author, player, license, ip, discord, reason, currentTime, banExp}, function(id)
         end)
     
-        --log(source, target, L('logs.banned'), 'player', {'Ban Time: '..time..' hours'})
         DropPlayer(target, 'Banned For: '..reason)
-    --end
+    end
 end
 
 DisableConnect = function(name, setKickReason, deferrals)
     local player = source
     deferrals.defer()
     Wait(0)
-    deferrals.update(('[%s] Hello %s, Checking for bans. . .'):format(GetCurrentResourceName(), name))
+    deferrals.update((L('deferrals.checkingBans')):format(GetCurrentResourceName(), name))
     local info = extractIdentifiers(player)
     local playerIdentifier = info.license
     MySQL.query('SELECT * FROM kd_bans WHERE license = ?', {playerIdentifier}, function(result)
@@ -81,7 +80,7 @@ DisableConnect = function(name, setKickReason, deferrals)
                 deferrals.done()
             elseif timeLeft > 1 or timeLeft == 1 then
                 local hours, minutes = splitTime(timeLeft)
-                deferrals.done(('You are Banned From the Server Reason: \'%s\' (Time Left: %s Hours %s Minutes).'):format(result[1].reason, hours, minutes))
+                deferrals.done((L('deferrals.banned')):format(result[1].reason, hours, minutes))
             end
         else
             deferrals.done()
@@ -90,7 +89,7 @@ DisableConnect = function(name, setKickReason, deferrals)
 end
 
 lib.callback.register('kd_adminpanel:getBanList', function(source)
-    --if checkGroup(source, true) then
+    if checkGroup(source, true) then
         local data
         MySQL.query('SELECT * FROM kd_bans', function(result)
             if result[1] then
@@ -115,21 +114,21 @@ lib.callback.register('kd_adminpanel:getBanList', function(source)
         end)
         while not data do Wait() end
         return data
-   -- end
+    end
 end)
 
 lib.callback.register('kd_adminpanel:banPlayer', function(source, target, time, reason)
-   -- if checkGroup(source, true) then
+    if checkGroup(source, true) then
         return BanPlayer(target, time, reason, source)
-  --  end
+    end
 end)
 
 lib.callback.register('kd_adminpanel:unban', function(source, targetlicense)
-  --  if checkGroup(source, true) then
+    if checkGroup(source, true) then
         MySQL.query('DELETE FROM kd_bans WHERE license = ?', { targetlicense })
-        --log(source, nil, L('logs.unBanned'), 'self', {'Unbanned License: '..targetlicense})
+
         return true
-   -- end
+    end
 end)
 
 AddEventHandler('playerConnecting', DisableConnect)

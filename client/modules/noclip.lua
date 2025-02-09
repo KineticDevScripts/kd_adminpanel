@@ -197,7 +197,7 @@ stopNoClip = function()
 end
 
 toggleNoClip = function(state)
-    --if not canUseAction('noclip') then return end
+    if not canUseAction('noClip') then return end
     IsNoClipping = state or not IsNoClipping
     PlayerPed    = cache.ped
     PlayerIsInVehicle = IsPedInAnyVehicle(PlayerPed, false)
@@ -216,19 +216,7 @@ toggleNoClip = function(state)
         setupCam()
         PlaySoundFromEntity(-1, 'SELECT', PlayerPed, 'HUD_LIQUOR_STORE_SOUNDSET', 0, 0)
 
-        local activeText = {
-            ('**No Clip** -  *Activated*  \n'),
-            ('**Controls:**  \n'),
-            ('[K] - Exit NoClip  \n'),
-            ('[Mousewheel Down] - Decrease Speed  \n'),
-            ('[Mousewheel Up] - Increase Speed  \n'),
-            ('[W] - Move Forward  \n'),
-            ('[S] - Move Backward  \n'),
-            ('[A] - Move Left  \n'),
-            ('[D] - Move Right  \n'),
-            ('[Q] - Move Up  \n'),
-            ('[E] - Move Down  \n'),
-        }
+        local activeText = L('textUI.noClip')
 
         lib.showTextUI(table.concat(activeText))
 
@@ -261,7 +249,7 @@ end
 if Config.noClip.key.enable then
     local keybind = lib.addKeybind({
         name = 'toggleNoClip',
-        description = 'press to toggle NoClip',
+        description = Config.noClip.key.help,
         defaultKey = Config.noClip.key.default,
         onPressed = function(self)
             toggleNoClip()

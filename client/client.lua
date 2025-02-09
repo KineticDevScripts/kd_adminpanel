@@ -14,7 +14,7 @@ if Config.commands['openMenu'].enabled then
                     openMenu()
                 end
             else
-                Utils.notify('Error','You are not an admin', 'error')
+                Utils.notify('Error',L('notify.error.notAdmin'), 'error')
             end
         end)
     end)
@@ -33,7 +33,7 @@ if Config.commands['openMenu'].keybind.enabled then
                         openMenu()
                     end
                 else
-                    Utils.notify('Error','You are not an admin', 'error')
+                    Utils.notify('Error',L('notify.error.notAdmin'), 'error')
                 end
             end)
         end
@@ -97,7 +97,7 @@ function toggleInvisibility(enabled)
     SetEntityVisible(cache.ped, not enabled)
 
     if enabled then
-        lib.showTextUI('Invisibility - **Activated**')
+        lib.showTextUI(L('textUI.invisibility'))
     else
         lib.hideTextUI()
     end
@@ -111,7 +111,7 @@ function godMode()
         SetPlayerInvincible(PlayerId(), true)
         while LocalPlayer.state.godMode do
             Wait(0)
-            lib.showTextUI('Godmode - **Activated**')
+            lib.showTextUI(L('textUI.godMode'))
         end
         lib.hideTextUI()
         SetPlayerInvincible(PlayerId(), false)
@@ -123,9 +123,9 @@ function canUseAction(menu)
         if Config.groups[group][menu] then
             return true
         else
-            return Utils.notify('Error','You do not have access to this', 'error')
+            return Utils.notify('Error',L('notify.error.noAccess'), 'error')
         end
     else 
-        return Utils.notify('Error','Your player group is not allowed', 'error')
+        return Utils.notify('Error',L('notify.error.groupNotAllowed'), 'error')
     end
 end

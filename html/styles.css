@@ -245,6 +245,7 @@ body {
   position: fixed;
   top: 0; left: 0;
   width: 100%; height: 100%;
+  z-index: 1100;
   background: rgba(0, 0, 0, 0.5);
   display: flex;
   align-items: center;
@@ -396,6 +397,7 @@ body {
   display: none; 
   z-index: 1000;
   min-width: 200px;
+  max-width: 600px;
 }
 
 .menu-header {
@@ -422,7 +424,7 @@ body {
   color: #ff4d4d;
 }
 
-.pkick-btn, .pban-btn, .pgoto-btn, .previve-btn, .pheal-btn, .pgive-item-btn {
+[class^="quick-actions-btn"] {
   width: 100%;
   background-color: var(--secondary-color);
   color: white;
@@ -434,9 +436,10 @@ body {
   font-size: 14px;
 }
 
-.pkick-btn:hover, .pban-btn:hover, .pgoto-btn:hover, .previve-btn:hover, .pheal-btn:hover, .pgive-item-btn:hover {
+[class^="quick-actions-btn"]:hover {
   filter: brightness(50%);
 }
+
 
 /* Resources */
 .search-container {

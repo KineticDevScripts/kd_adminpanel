@@ -304,12 +304,14 @@
           <button class="close-btn" onclick="closeQuickActionsMenu()">X</button>
         </div>
         <div class="action-buttons">
-          <button class="pkick-btn" onclick="openKickDialog()">Kick Player</button>
-          <button class="pban-btn" onclick="openBanDialog()">Ban Player</button>
-          <button class="pgoto-btn" onclick="gotoPlayer()">Goto Player</button>
-          <button class="previve-btn" onclick="revivePlayer()">Revive Player</button>
-          <button class="pheal-btn" onclick="healPlayer()">Heal Player</button>
-          <button class="pgive-item-btn" onclick="openItemDialog()">Give Item</button>
+          <button class="quick-actions-btn1" onclick="openKickDialog()">Kick Player</button>
+          <button class="quick-actions-btn2" onclick="openBanDialog()">Ban Player</button>
+          <button class="quick-actions-btn3" onclick="gotoPlayer()">Goto Player</button>
+          <button class="quick-actions-btn4" onclick="bringPlayer()">Bring Player</button>
+          <button class="quick-actions-btn5" onclick="revivePlayer()">Revive Player</button>
+          <button class="quick-actions-btn6" onclick="healPlayer()">Heal Player</button>
+          <button class="quick-actions-btn7" onclick="openItemDialog()">Give Item</button>
+          <button class="quick-actions-btn8" onclick="openPMoneyDialog()">Give Money</button>
         </div>
 
         <!-- Ban Dialog -->
@@ -359,6 +361,30 @@
           </div>
         </div>
       </div>
+
+      <!-- Money Dialog -->
+      <div id="pMoney-dialog" class="dialog-overlay">
+        <div class="dialog-box">
+            <h2>Select Account</h2>
+    
+            <!-- Account Type Dropdown -->
+            <select id="pAccountType">
+                <option value="money">Cash</option>
+                <option value="bank">Bank</option>
+            </select>
+    
+            <br>
+            <h2>Enter Amount</h2>
+    
+            <!-- Amount Input -->
+            <input type="number" id="pAmount" min="1" max="999999999" value="1">
+            <br>
+    
+            <!-- Buttons -->
+            <button class="confirm-btn" onclick="confirmPMoney()">Confirm</button>
+            <button class="cancel-btn" onclick="closePMoneyDialog()">Cancel</button>
+        </div>
+      </div>      
 
       <!-- Resources Tab -->
       <div id="resources" class="tab">

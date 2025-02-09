@@ -25,9 +25,7 @@ Utils = {
             revive = true
         }
     
-        TriggerClientEvent('kni_ambulancejob:healPlayer', player, data)
-
-        -- exports.wasabi_ambulance:RevivePlayer(player) 
+        TriggerClientEvent('ars_ambulancejob:healPlayer', player, data)
     end,
 
     healPlayer = function(player)
@@ -35,6 +33,6 @@ Utils = {
             heal = true
         }
     
-        TriggerClientEvent('kni_ambulancejob:healPlayer', player, data)
+        TriggerClientEvent('ars_ambulancejob:healPlayer', player, data)
     end
 }

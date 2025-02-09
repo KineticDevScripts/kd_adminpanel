@@ -246,6 +246,12 @@ RegisterNUICallback('gotoPlayer', function(data, cb)
     end
 end)
 
+RegisterNUICallback('bringPlayer', function(data, cb)
+    if canUseAction('bringPlayer') then 
+        TriggerServerEvent('kd_adminpanel:bringPlayer', data.playerId)
+    end
+end)
+
 RegisterNUICallback('revivePlayer', function(data, cb)
     if canUseAction('revivePlayer') then 
         TriggerServerEvent('kd_adminpanel:revivePlayer', data.playerId)
@@ -261,6 +267,12 @@ end)
 RegisterNUICallback('givePlayerItem', function(data, cb)
     if canUseAction('givePlayerItem') then 
         TriggerServerEvent('kd_adminpanel:givePlayerItem', data.playerId, data.item, data.amount)
+    end
+end)
+
+RegisterNUICallback('givePlayerMoney', function(data, cb)
+    if canUseAction('givePlayerMoney') then 
+        TriggerServerEvent('kd_adminpanel:givePlayerMoney', data.playerId, data.account, data.amount)
     end
 end)
 

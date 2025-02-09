@@ -423,97 +423,133 @@ function closeItemDialog() {
   document.getElementById("item-dialog").classList.remove("active");
 }
 
+function openPMoneyDialog() {
+  document.getElementById("pMoney-dialog").classList.add("active");
+}
+
+function closePMoneyDialog() {
+  document.getElementById("pMoney-dialog").classList.remove("active");
+}
+
 function confirmKick() {
-  let reason = document.getElementById("kickReason").value.trim(); 
+  if (selectedPlayerId) {
+    let reason = document.getElementById("kickReason").value.trim(); 
 
-  if (reason.length === 0) {
-    console.error("Kick reason is required.");
-  } else {
-    fetch(`https://${GetParentResourceName()}/kickPlayer`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ playerId: selectedPlayerId, reason: reason })
-    });
+    if (reason.length === 0) {
+      console.error("Kick reason is required.");
+    } else {
+      fetch(`https://${GetParentResourceName()}/kickPlayer`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ playerId: selectedPlayerId, reason: reason })
+      });
+    }
   }
-
   closeKickDialog();
 }
 
 function confirmBan() {
-  let reason = document.getElementById("banReason").value.trim(); 
-  let time = document.getElementById("banTime").value;
-
-  if (reason.length === 0) {
-    console.error("Ban reason is required.");
-  } else if (time.lenth === 0) {
-    console.error("Ban time is required.");
-  } else {
-    fetch(`https://${GetParentResourceName()}/banPlayer`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ playerId: selectedPlayerId, reason: reason, time: time })
-    });
+  if (selectedPlayerId) {
+    let reason = document.getElementById("banReason").value.trim(); 
+    let time = document.getElementById("banTime").value;
+  
+    if (reason.length === 0) {
+      console.error("Ban reason is required.");
+    } else if (time.lenth === 0) {
+      console.error("Ban time is required.");
+    } else {
+      fetch(`https://${GetParentResourceName()}/banPlayer`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ playerId: selectedPlayerId, reason: reason, time: time })
+      });
+    }
   }
-
   closeBanDialog();
 }
 
 function gotoPlayer() {
   if (selectedPlayerId) {
-      console.log(`Teleporting to player with ID: ${selectedPlayerId}`);
-      
-      fetch(`https://${GetParentResourceName()}/gotoPlayer`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ playerId: selectedPlayerId })
-      });
+    fetch(`https://${GetParentResourceName()}/gotoPlayer`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ playerId: selectedPlayerId })
+    });
+  }
+  closeQuickActionsMenu();
+}
+
+function bringPlayer() {
+  if (selectedPlayerId) {
+    fetch(`https://${GetParentResourceName()}/bringPlayer`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ playerId: selectedPlayerId })
+    });
   }
   closeQuickActionsMenu();
 }
 
 function revivePlayer() {
   if (selectedPlayerId) {
-      console.log(`Revivng player with ID: ${selectedPlayerId}`);
-
-      fetch(`https://${GetParentResourceName()}/revivePlayer`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ playerId: selectedPlayerId })
-      });
+    fetch(`https://${GetParentResourceName()}/revivePlayer`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ playerId: selectedPlayerId })
+    });
   }
   closeQuickActionsMenu();
 }
 
 function healPlayer() {
   if (selectedPlayerId) {
-      console.log(`Healing player with ID: ${selectedPlayerId}`);
-      
-      fetch(`https://${GetParentResourceName()}/healPlayer`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ playerId: selectedPlayerId })
-      });
+    fetch(`https://${GetParentResourceName()}/healPlayer`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ playerId: selectedPlayerId })
+    });
   }
   closeQuickActionsMenu();
 }
 
 function confirmItem() {
-  let item = document.getElementById("itemName").value;
-  let amount = document.getElementById("itemQuantity").value;
-  amount = parseInt(amount, 10);
+  if (selectedPlayerId) {
+    let item = document.getElementById("itemName").value;
+    let amount = document.getElementById("itemQuantity").value;
+    amount = parseInt(amount, 10);
+    
+    if (!amount || amount < 1) {
+      alert("Please enter a valid amount!");
+      return;
+    }
   
-  if (!amount || amount < 1) {
-    alert("Please enter a valid amount!");
-    return;
+    fetch(`https://${GetParentResourceName()}/givePlayerItem`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ playerId: selectedPlayerId, item: item, amount: amount })
+    });
   }
-
-  fetch(`https://${GetParentResourceName()}/givePlayerItem`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ playerId: selectedPlayerId, item: item, amount: amount })
-  });
-
   closeItemDialog();
+}
+
+function confirmPMoney() {
+  if (selectedPlayerId) {
+    let account = document.getElementById("pAccountType").value;
+    let amount = document.getElementById("pAmount").value;
+    amount = parseInt(amount, 10);
+    
+    if (!amount || amount < 1) {
+        alert("Please enter a valid amount!");
+        return;
+    }
+  
+    fetch(`https://${GetParentResourceName()}/givePlayerMoney`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ playerId: selectedPlayerId, account: account, amount: amount })
+    });
+  }
+  closePMoneyDialog();
 }
 
 // End Players tab
@@ -636,12 +672,9 @@ function updateSecondaryColor(color) {
     document.querySelector(".resources").style.backgroundColor = color;
     document.querySelector(".logs").style.backgroundColor = color;
     document.querySelector(".settings").style.backgroundColor = color;
-    document.querySelector(".pkick-btn").style.backgroundColor = color;
-    document.querySelector(".pban-btn").style.backgroundColor = color;
-    document.querySelector(".pgoto-btn").style.backgroundColor = color;
-    document.querySelector(".previve-btn").style.backgroundColor = color;
-    document.querySelector(".pheal-btn").style.backgroundColor = color;
-    document.querySelector(".pgive-item-btn").style.backgroundColor = color;
+    document.querySelectorAll("[class^='quick-actions-btn']").forEach(btn => {
+      btn.style.background = color;
+    });
     document.querySelector(".restart-btn").style.backgroundColor = color;
     document.querySelector(".start-btn").style.backgroundColor = color;
     document.querySelector(".stop-btn").style.backgroundColor = color;
@@ -744,14 +777,12 @@ function applySettings(settings) {
     btn.style.border = `3px solid ${settings.secondaryColor}`;
     btn.style.boxShadow = `0px 0px 10px ${settings.secondaryColor}`;
   });
+  
 
   document.querySelector(".quick-actions-menu").style.backgroundColor = settings.primaryColor;
-  document.querySelector(".pkick-btn").style.backgroundColor = settings.secondaryColor;
-  document.querySelector(".pban-btn").style.backgroundColor = settings.secondaryColor;
-  document.querySelector(".pgoto-btn").style.backgroundColor = settings.secondaryColor;
-  document.querySelector(".previve-btn").style.backgroundColor = settings.secondaryColor;
-  document.querySelector(".pheal-btn").style.backgroundColor = settings.secondaryColor;
-  document.querySelector(".pgive-item-btn").style.backgroundColor = settings.secondaryColor;
+  document.querySelectorAll("[class^='quick-actions-btn']").forEach(btn => {
+    btn.style.background = settings.secondaryColor;
+  });
 
   document.querySelector(".manage-resource-menu").style.backgroundColor = settings.primaryColor;
   document.querySelector(".restart-btn").style.backgroundColor = settings.secondaryColor;

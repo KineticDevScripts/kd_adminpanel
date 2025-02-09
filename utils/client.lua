@@ -9,10 +9,10 @@ Utils = {
     end,
 
     revive = function()
-        TriggerEvent('kni_ambulancejob:healPlayer', {revive = true})
+        TriggerEvent('ars_ambulancejob:healPlayer', {revive = true})
     end,
 
     heal = function()
-        TriggerEvent('kni_ambulancejob:healPlayer', {heal = true})
+        TriggerEvent('ars_ambulancejob:healPlayer', {heal = true})
     end
 }
