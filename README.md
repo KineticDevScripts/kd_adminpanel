@@ -5,22 +5,22 @@ A customizable admin menu for FiveM servers, allowing admins to easily perform s
 ## Features:
 
 * Dashboard:
-![image](https://github.com/user-attachments/assets/62b2ca6b-ad80-4cbf-8659-25c0fe36630e)
+![image](https://github.com/user-attachments/assets/59e81951-fce3-4002-93c1-88086e4d1678)
 
 * Admin Actions:
-![image](https://github.com/user-attachments/assets/68f9acd3-3809-4af1-9488-2b357936281a)
+![image](https://github.com/user-attachments/assets/b301cdf7-9f2d-4a65-b2f4-60eed6f9034d)
 
 * Player Management
-![image](https://github.com/user-attachments/assets/9bb3bb6e-ccd7-4b68-89ef-7a88e01ea7ac)
+![image](https://github.com/user-attachments/assets/71252cd5-392a-4ed6-9bb0-1950fbb634f8)
 
 * Resource Management
-![image](https://github.com/user-attachments/assets/ecced2bc-b604-40a7-b1d0-f9076cc411f9)
+![image](https://github.com/user-attachments/assets/8f3fb297-50d1-4045-9bba-ef140ff252fa)
 
 * Action Logs
-![image](https://github.com/user-attachments/assets/22aa8ae8-bd61-484e-954e-7c8dd0e9f8de)
+![image](https://github.com/user-attachments/assets/8ab9d359-ea90-4cbc-a9ec-23d642f4747a)
 
 * Menu Settings
-![image](https://github.com/user-attachments/assets/4bcfa3b4-0f46-472a-8733-c3c0d0824ea2)
+![image](https://github.com/user-attachments/assets/85d363a0-e965-4b4c-bf34-251198d26549)
 
 ## Dependencies
 * Framework: ESX
