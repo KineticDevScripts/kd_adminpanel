@@ -18,15 +18,13 @@ Citizen.CreateThread(function()
 end)
 
 RegisterNUICallback('getServerData', function(data, cb)
-    -- Fetch the real server data
     local serverData = {
-      resourceCount = GetNumResources(),  -- You can replace this with dynamic data like server status
-      playerCount = GetNumberOfPlayers(),  -- Get online player count
-      uptime = serverUptime,  -- You can use an actual uptime function here
+      resourceCount = GetNumResources(),  
+      playerCount = GetNumberOfPlayers(), 
+      uptime = serverUptime, 
       version = GetResourceMetadata(GetCurrentResourceName(), 'version', 0)  
     }
   
-    -- Send the server data back to NUI
     cb(serverData)
 end)
 
