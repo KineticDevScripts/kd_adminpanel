@@ -27,6 +27,6 @@ A customizable admin menu for FiveM servers, allowing admins to easily perform s
 
 ## Dependencies
 
-### Framework: ESX
-### [ox_lib](https://github.com/overextended/ox_lib)
-### [oxmysql](https://github.com/overextended/oxmysql)
+* Framework: ESX
+* [ox_lib](https://github.com/overextended/ox_lib)
+* [oxmysql](https://github.com/overextended/oxmysql)
