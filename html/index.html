@@ -312,6 +312,7 @@
           <button class="quick-actions-btn6" onclick="healPlayer()">Heal Player</button>
           <button class="quick-actions-btn7" onclick="openItemDialog()">Give Item</button>
           <button class="quick-actions-btn8" onclick="openPMoneyDialog()">Give Money</button>
+          <button class="quick-actions-btn9" onclick="openPJobDialog()">Set Job</button>
         </div>
 
         <!-- Ban Dialog -->
@@ -384,7 +385,21 @@
             <button class="confirm-btn" onclick="confirmPMoney()">Confirm</button>
             <button class="cancel-btn" onclick="closePMoneyDialog()">Cancel</button>
         </div>
-      </div>      
+      </div> 
+      
+      <!-- Job Dialog -->
+      <div id="pJob-dialog" class="dialog-overlay">
+        <div class="dialog-box">
+          <h2>Enter Job Name</h2>
+          <input type="text" id="pJob" aria-label="Enter job name">
+          <br>
+          <h2>Enter Job Grade</h2>
+          <input type="number" id="pGrade" min="1" max="10" value="1" aria-label="Enter job grade">
+          <br>
+          <button class="confirm-btn" onclick="confirmPJob()">Confirm</button>
+          <button class="cancel-btn" onclick="closePJobDialog()">Cancel</button>
+        </div>
+      </div>
 
       <!-- Resources Tab -->
       <div id="resources" class="tab">
@@ -498,7 +513,7 @@
           <h3>Menu Size</h3>
           <div>
             <label for="menu-size" class="size-label">Menu Size:</label>
-            <input type="range" id="menu-size" min="60" max="80" step="5" oninput="updateMenuSize(this.value)">
+            <input type="range" id="menu-size" min="60" max="80" step="5" onchange="updateMenuSize(this.value)">
           </div>
         </div>
     

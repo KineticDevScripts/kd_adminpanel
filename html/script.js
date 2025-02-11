@@ -431,6 +431,14 @@ function closePMoneyDialog() {
   document.getElementById("pMoney-dialog").classList.remove("active");
 }
 
+function openPJobDialog() {
+  document.getElementById("pJob-dialog").classList.add("active");
+}
+
+function closePJobDialog() {
+  document.getElementById("pJob-dialog").classList.remove("active");
+}
+
 function confirmKick() {
   if (selectedPlayerId) {
     let reason = document.getElementById("kickReason").value.trim(); 
@@ -550,6 +558,26 @@ function confirmPMoney() {
     });
   }
   closePMoneyDialog();
+}
+
+function confirmPJob() {
+  if (selectedPlayerId) {
+    let job = document.getElementById("pJob").value; 
+    let grade = document.getElementById("pGrade").value;
+  
+    if (job .length === 0) {
+      console.error("Job name is required.");
+    } else if (grade .lenth === 0) {
+      console.error("Job grade is required.");
+    } else {
+      fetch(`https://${GetParentResourceName()}/setPlayerJob`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ playerId: selectedPlayerId, job: job, grade: grade })
+      });
+    }
+  }
+  closePJobDialog();
 }
 
 // End Players tab

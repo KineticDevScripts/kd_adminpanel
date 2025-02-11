@@ -18,13 +18,15 @@ Citizen.CreateThread(function()
 end)
 
 RegisterNUICallback('getServerData', function(data, cb)
+    -- Fetch the real server data
     local serverData = {
-      resourceCount = GetNumResources(),  
-      playerCount = GetNumberOfPlayers(), 
-      uptime = serverUptime, 
+      resourceCount = GetNumResources(),  -- You can replace this with dynamic data like server status
+      playerCount = GetNumberOfPlayers(),  -- Get online player count
+      uptime = serverUptime,  -- You can use an actual uptime function here
       version = GetResourceMetadata(GetCurrentResourceName(), 'version', 0)  
     }
   
+    -- Send the server data back to NUI
     cb(serverData)
 end)
 
@@ -271,6 +273,12 @@ end)
 RegisterNUICallback('givePlayerMoney', function(data, cb)
     if canUseAction('givePlayerMoney') then 
         TriggerServerEvent('kd_adminpanel:givePlayerMoney', data.playerId, data.account, data.amount)
+    end
+end)
+
+RegisterNUICallback('setPlayerJob', function(data, cb)
+    if canUseAction('setPlayerJob') then 
+        TriggerServerEvent('kd_adminpanel:setPlayerJob', data.playerId, data.job, data.grade)
     end
 end)
 

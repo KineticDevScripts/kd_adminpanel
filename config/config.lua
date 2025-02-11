@@ -61,6 +61,7 @@ Config = {
             ['healPlayer'] = true,
             ['givePlayerItem'] = true,
             ['givePlayerMoney'] = true,
+            ['setPlayerJob'] = true,
 
             -- Resource Options
             ['restartResource'] = true,

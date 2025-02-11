@@ -462,6 +462,20 @@ AddEventHandler("kd_adminpanel:givePlayerMoney", function(playerId, account, amo
     end
 end)
 
+RegisterNetEvent("kd_adminpanel:setPlayerJob")
+AddEventHandler("kd_adminpanel:setPlayerJob", function(playerId, job, grade)
+    if checkGroup(source, true) then
+        local name = GetPlayerName(playerId)
+        local xPlayer = ESX.GetPlayerFromId(playerId)
+    
+        print(grade)
+        xPlayer.setJob(job, grade)
+        sendLog(timestamp, 'Set Player Job', GetPlayerName(source), name, 'Admin Set Player\'s job to: '..job)
+        Utils.notify("Success", ('You have successfully set %s\'s job to %s'):format(name, job), 'success', source)
+        Utils.notify("Success", ('An admin has set your job to %s'):format(job), 'success', playerId)
+    end
+end)
+
 RegisterNetEvent("kd_adminpanel:manageResource")
 AddEventHandler("kd_adminpanel:manageResource", function(resource, action)
     if checkGroup(source, true) then
