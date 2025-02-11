@@ -482,7 +482,9 @@ AddEventHandler("kd_adminpanel:manageResource", function(resource, action)
         local timestamp = os.date("%Y-%m-%d %H:%M:%S")
 
         if action == 'restart' then
-            restartResource(resource)
+            StopResource(resource)
+            Wait(2000)
+            StartResource(resource)
 
             sendLog(timestamp, 'Resource Restart', GetPlayerName(source), 'None', 'Resource: '..resource)
             Utils.notify("Success", L('notify.success.restartResource'):format(resource), 'success', source)
