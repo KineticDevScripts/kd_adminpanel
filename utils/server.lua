@@ -3,7 +3,7 @@ Utils = {
         TriggerClientEvent('ox_lib:notify', player, {
             title = title,
             description = msg,
-            position = Config.notifyAlign,
+            position = 'top',
             type = type
         })
     end,
@@ -25,9 +25,7 @@ Utils = {
             revive = true
         }
     
-        TriggerClientEvent('kni_ambulancejob:healPlayer', player, data)
-
-        -- exports.wasabi_ambulance:RevivePlayer(player) 
+        TriggerClientEvent('kni_ambulancejob:healPlayer', player, data) 
     end,
 
     healPlayer = function(player)

@@ -3,33 +3,36 @@ game 'gta5'
 lua54 'yes'
 
 author 'Kinetic Dev'
-version '1.0.2'
+version '2.0.0'
+
+ui_page 'html/index.html'
 
 shared_scripts {
-    '@es_extended/imports.lua',
     '@ox_lib/init.lua',
+    'bridge/framework.lua',
     'locale.lua',
 	'locales/*.lua',
     'config/*.lua'
 }
 
 client_scripts {
+    'bridge/**/client.lua',
     'utils/client.lua',
-    'client/*.lua',
-    'client/modules/*.lua'
+    'client/modules/*.lua',
+    'client/*.lua'
 }
 
 server_scripts {
     '@oxmysql/lib/MySQL.lua',
+    'bridge/**/server.lua',
     'utils/server.lua',
-    'server/*.lua',
-    'server/modules/*.lua'
+    'server/modules/*.lua',
+    'server/*.lua'
 }
-
-ui_page 'html/index.html'
 
 files {
     'html/index.html',
-    'html/styles.css',
+    'html/logo.png',
+    'html/style.css',
     'html/script.js'
 }

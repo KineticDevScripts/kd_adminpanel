@@ -1,3 +1,4 @@
+------ START DASHBOARD ------
 local serverUptime = 0
 
 Citizen.CreateThread(function()
@@ -14,30 +15,37 @@ Citizen.CreateThread(function()
 
 		uptime = string.format("%02dh %02dm", uptimeHour, uptimeMinute)
         serverUptime = uptime
+        sendUptime(uptime)
 	end
 end)
 
-RegisterNUICallback('getServerData', function(data, cb)
-    -- Fetch the real server data
-    local serverData = {
-      resourceCount = GetNumResources(),  -- You can replace this with dynamic data like server status
-      playerCount = GetNumberOfPlayers(),  -- Get online player count
-      uptime = serverUptime,  -- You can use an actual uptime function here
+function sendUptime(uptime)
+    SendNUIMessage({
+        action = "updateUptime",
+        uptime = uptime
+    })
+end
+
+RegisterNUICallback('getHeaderData', function(data, cb)
+    SendNUIMessage({
+        action = "updateHeader",
+        header = Config.menu.header
+    })
+end)
+
+RegisterNUICallback('getDashboardData', function(data, cb)
+    local dashboardData = {
+      resourceCount = GetNumResources(),  
+      playerCount = GetNumberOfPlayers(),  
+      uptime = serverUptime,  
       version = GetResourceMetadata(GetCurrentResourceName(), 'version', 0)  
     }
   
-    -- Send the server data back to NUI
-    cb(serverData)
+    cb(dashboardData)
 end)
+------ END DASHBOARD ------
 
-RegisterNUICallback('requestPlayers', function(data, cb)
-    TriggerServerEvent('kd_adminpanel:getOnlinePlayers') 
-end)
-
-RegisterNUICallback('requestResources', function(data, cb)
-    TriggerServerEvent('kd_adminpanel:getResources')
-end)
-
+------ START ADMIN ACTIONS ------
 RegisterNUICallback("selfRevive", function(data, cb)
     if canUseAction('selfRevive') then 
         Utils.revive()
@@ -78,13 +86,12 @@ RegisterNUICallback("toggleInvisibility", function(data, cb)
         toggleInvisibility(false)
     end
     TriggerServerEvent('kd_adminpanel:toggleInvisibility')
-    cb("ok")
 end)
 
 RegisterNUICallback("toggleGodMode", function(data, cb)
     if canUseAction('godMode') then 
-        godMode()
         TriggerServerEvent('kd_adminpanel:toggleGodMode')
+        godMode()
     end
 end)
 
@@ -136,14 +143,7 @@ RegisterNUICallback("repairVehicle", function(data, cb)
     end
 end)
 
-RegisterNUICallback("unbanPlayer", function(data, cb)
-    if canUseAction('unbanPlayer') then 
-        local unban = lib.callback.await('kni_adminmenu:unban', 2000, license)
-        TriggerServerEvent('kd_adminpanel:unbanPlayer', data.license)
-    end
-end)
-
-RegisterNUICallback("announcement", function(data, cb)
+RegisterNUICallback("sendAnnouncement", function(data, cb)
     if canUseAction('announcement') then 
         TriggerServerEvent('kd_adminpanel:announcement', data.msg)
     end
@@ -201,7 +201,9 @@ RegisterNUICallback("copyCoords", function(data, cb)
         local vec3 = 'vec3(' .. playerCoords.x .. ', ' .. playerCoords.y .. ', ' .. playerCoords.z .. ')'
         local vec4 = 'vec4(' .. playerCoords.x .. ', ' .. playerCoords.y .. ', ' .. playerCoords.z .. ', ' .. playerHeading .. ')'
     
-        if data.type == 'xyz' then
+        if data.type == 'h' then
+            lib.setClipboard(playerHeading)
+        elseif data.type == 'xyz' then
             lib.setClipboard(xyz)
         elseif data.type == 'vec3' then
             lib.setClipboard(vec3) 
@@ -218,12 +220,42 @@ RegisterNUICallback("tpToCoords", function(data, cb)
     if coords and #coords == 3 then
         local vecCoords = vector3(coords[1], coords[2], coords[3])
         SetEntityCoords(playerPed, vecCoords.x, vecCoords.y, vecCoords.z, false, false, false, false)
-        cb("success")
     else
         cb("error")
     end
 end)
 
+RegisterNUICallback('requestPlayers', function(data, cb)
+    TriggerServerEvent('kd_adminpanel:getOnlinePlayers') 
+end)
+
+RegisterNUICallback('getServerItems', function(data, cb)
+    local serverItems = {}
+
+    for item, data in pairs(exports.ox_inventory:Items()) do
+        table.insert(serverItems, {
+            name = item,
+            label = data.label
+        })
+    end
+
+    cb(serverItems)
+end)
+
+RegisterNUICallback('getPlayerItems', function(data, cb)
+    local playerId = data.playerId -- Get selected player ID from NUI
+
+    lib.callback('adminMenu:getPlayerInventory', false, function(items)
+        cb(items) -- Send inventory data back to NUI
+    end, playerId) -- Pass selected player ID
+end)
+
+RegisterNUICallback('requestResources', function(data, cb)
+    TriggerServerEvent('kd_adminpanel:getResources')
+end)
+------ END ADMIN ACTIONS ------
+
+------ START ONLINE PLAYERS ------
 RegisterNUICallback('kickPlayer', function(data, cb)
     if canUseAction('kickPlayer') then 
         TriggerServerEvent('kd_adminpanel:kickPlayer', data.playerId, data.reason)
@@ -237,6 +269,12 @@ RegisterNUICallback('banPlayer', function(data, cb)
         if not playerBanned then
             TriggerServerEvent('kd_adminpanel:banPlayer', data.playerId, data.reason, data.time)
         end
+    end
+end)
+
+RegisterNUICallback('spectatePlayer', function(data, cb)
+    if canUseAction('spectatePlayer') then 
+        TriggerServerEvent('kd_adminpanel:server:startSpectate', data.playerId)
     end
 end)
 
@@ -264,15 +302,15 @@ RegisterNUICallback('healPlayer', function(data, cb)
     end
 end)
 
-RegisterNUICallback('givePlayerItem', function(data, cb)
-    if canUseAction('givePlayerItem') then 
-        TriggerServerEvent('kd_adminpanel:givePlayerItem', data.playerId, data.item, data.amount)
-    end
-end)
-
 RegisterNUICallback('givePlayerMoney', function(data, cb)
     if canUseAction('givePlayerMoney') then 
         TriggerServerEvent('kd_adminpanel:givePlayerMoney', data.playerId, data.account, data.amount)
+    end
+end)
+
+RegisterNUICallback('removePlayerMoney', function(data, cb)
+    if canUseAction('removePlayerMoney') then 
+        TriggerServerEvent('kd_adminpanel:removePlayerMoney', data.playerId, data.account, data.amount)
     end
 end)
 
@@ -282,6 +320,20 @@ RegisterNUICallback('setPlayerJob', function(data, cb)
     end
 end)
 
+RegisterNUICallback("givePlayerItem", function(data, cb)
+    if canUseAction('givePlayerItem') then 
+        TriggerServerEvent('kd_adminpanel:givePlayerItem', data.playerId, data.item, data.amount)
+    end
+end)
+
+RegisterNUICallback('removePlayerItem', function(data, cb)
+    if canUseAction('removePlayerItem') then 
+        TriggerServerEvent('kd_adminpanel:removePlayerItem', data.playerId, data.item, data.amount)
+    end
+end)
+------ END ONLINE PLAYERS ------
+
+------ START RESOURCES ------
 RegisterNUICallback("restartResource", function(data, cb)
     if canUseAction('restartResource') then 
         TriggerServerEvent('kd_adminpanel:manageResource', data.resource, 'restart')
@@ -299,11 +351,9 @@ RegisterNUICallback("stopResource", function(data, cb)
         TriggerServerEvent('kd_adminpanel:manageResource', data.resource, 'stop')
     end
 end)
+------ END RESOURCES ------
 
-RegisterNUICallback("savePlayerSettings", function(data, cb)
-    TriggerServerEvent("kd_adminpanel:savePlayerSettings", data)
-end)
-
+-- Close menu
 RegisterNUICallback("closeMenu", function(data, cb)
     LocalPlayer.state.menuOpen = false
     SetNuiFocus(false, false)

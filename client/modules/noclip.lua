@@ -169,7 +169,7 @@ stopNoClip = function()
     ResetEntityAlpha(NoClipEntity)
     SetPoliceIgnorePlayer(PlayerPed, true)
     createEffect()
-    lib.hideTextUI()
+    Utils.hideTextUI()
 
     if GetVehiclePedIsIn(PlayerPed, false) ~= 0 then
         while (not IsVehicleOnAllWheels(NoClipEntity)) and not IsNoClipping do
@@ -218,7 +218,7 @@ toggleNoClip = function(state)
 
         local activeText = L('textUI.noClip')
 
-        lib.showTextUI(table.concat(activeText))
+        Utils.showTextUI(table.concat(activeText))
 
         if not PlayerIsInVehicle then
             ClearPedTasksImmediately(PlayerPed)

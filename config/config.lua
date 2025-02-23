@@ -1,34 +1,40 @@
 Config = {
-    locale = 'en', -- only en, you can edit or add more in locales folder
-    notifyAlign = 'top', -- 'top' or 'top-right' or 'top-left' or 'bottom' or 'bottom-right' or 'bottom-left' or 'center-right' or 'center-left'
+    locale = 'en', -- locale | you can add more in locales folder
 
-    defaultSettings = {
-        primaryColor = "#ff0000",
-        secondaryColor = "#0d0c0c",
-        menuSize = 65, -- recommended default
-        menuPosition = { 
-            top = 178, -- recommended default
-            left = 436 -- recommended default
-        } 
+    menu = { -- menu config
+        header = { -- header settings
+            topText = 'Kinetic Dev', -- top text
+            bottomText = 'Fivem Developer', -- bottom text |shows directly under top text
+            logo = 'https://r2.fivemanage.com/KQGRRm8DukQthtgazMChN/images/kinetic-3.jpg' -- header logo | shows to left of top and bottom text
+        }
     },
+    
+    commands = { -- commands
+        ['adminMenu'] = { -- command to open menu
+            enabled = false, -- enable?
+            name = 'adminmenu' -- command
+        },
 
-    commands = {
-        openMenu = {
-            enabled = true, -- enable command?
-            name = 'adminmenu', -- command name
-            keybind = {
-                enabled = true, -- enable keybind?
-                key = 'F9', -- default key
-                help = 'Open the admin panel' -- keybind help
-            }
+        ['banList'] = { -- command to open banlist
+            enabled = true, -- enable?
+            name = 'banList' -- command
         }
     },
 
-    groups = { -- what groups can access what actions?
+    keys = { -- keybinds
+        ['adminMenu'] = { -- keybind for menu
+            enabled = true, -- enable?
+            desc = 'Open the admin panel (Staff Only)', -- help description
+            key = 'F9' -- key
+        }
+    },
+    
+    groups = { -- what groups can access what features?
         ['admin'] = {
+            -- Open menu
             ['open'] = true,
 
-            -- Self Options
+            -- Admin actions
             ['selfRevive'] = true,
             ['selfHeal'] = true,
             ['selfMoney'] = true,
@@ -36,76 +42,76 @@ Config = {
             ['noClip'] = true,
             ['invisibility'] = true,
             ['godMode'] = true,
-
-            -- Vehicle Options
             ['spawnCar'] = true,
             ['deleteVehicle'] = true,
             ['repairVehicle'] = true,
-
-            -- Server Options
-            ['unbanPlayer'] = true,
+            ['unBanPlayer'] = true,
             ['announcement'] = true,
             ['carWipe'] = true,
             ['objectWipe'] = true,
             ['pedWipe'] = true,
-
-            -- Dev Options
             ['copyCoords'] = true,
 
-            -- Player Options
+            -- Player actions
             ['kickPlayer'] = true,
             ['banPlayer'] = true,
+            ['spectatePlayer'] = true,
             ['gotoPlayer'] = true,
             ['bringPlayer'] = true,
             ['revivePlayer'] = true,
             ['healPlayer'] = true,
-            ['givePlayerItem'] = true,
             ['givePlayerMoney'] = true,
+            ['removePlayerMoney'] = true,
             ['setPlayerJob'] = true,
+            ['givePlayerItem'] = true,
+            ['removePlayerItem'] = true,
 
-            -- Resource Options
+            -- Resource actions
             ['restartResource'] = true,
             ['startResource'] = true,
             ['stopResource'] = true,
-        },
 
+            -- Server actions
+            ['banList'] = true,
+        },
+    
         ['mod'] = {
+            -- Open menu
             ['open'] = true,
 
-            -- Self Options
+            -- Admin actions
             ['selfRevive'] = true,
             ['selfHeal'] = true,
             ['noClip'] = true,
-
-            -- Vehicle Options
+            ['invisibility'] = true,
+            ['godMode'] = true,
             ['spawnCar'] = true,
             ['deleteVehicle'] = true,
             ['repairVehicle'] = true,
-
-            -- Server Options
             ['carWipe'] = true,
             ['objectWipe'] = true,
             ['pedWipe'] = true,
-
-            -- Dev Options
             ['copyCoords'] = true,
 
-            -- Player Options
+            -- Player actions
+            ['kickPlayer'] = true,
+            ['spectatePlayer'] = true,
             ['gotoPlayer'] = true,
             ['bringPlayer'] = true,
             ['revivePlayer'] = true,
             ['healPlayer'] = true,
+            ['setPlayerJob'] = true,
         },
     },
 
     noClip = { -- NoClip settings
-        firstPersonWhileNoclip = true,
-        defaultSpeed = 1.0,
-        maxSpeed = 12.0,
-        key = {
-            enable = true,
-            default = 'K',
-            help = 'press to toggle NoClip'
+        firstPersonWhileNoclip = true, -- use first person while noclipping?
+        defaultSpeed = 1.0, -- default noclip speed
+        maxSpeed = 12.0, -- max noclip speed
+        key = { -- keybind
+            enable = true, -- enable?
+            default = 'K', -- key
+            help = 'press to toggle NoClip' -- help description
         },
         controls = {
             decreaseSpeed = 14,  -- Mouse wheel down
@@ -117,9 +123,27 @@ Config = {
             moveUp = 44,         -- Q
             moveDown = 46,       -- E
         },
-        particle = {
+        particle = { -- particle when activate noclip | dont touch if not familiar
             fxName = 'core',
             effectName = 'ent_dst_elec_fire_sp'
         }
-    }
+    },
+
+    spectate = { -- Spectate settings
+        screenshot = {
+            enabled = true, -- enabled?
+            button = 191,   -- ENTER
+        },
+        revive = {
+            enabled = true, -- enabled?
+            button = 29,    -- B
+        },
+        kick = {
+            enabled = true, -- enabled?
+            Button = 47,    -- G
+        },
+        exit = {
+            button = 194 -- BACKSPACE
+        }
+    },
 }

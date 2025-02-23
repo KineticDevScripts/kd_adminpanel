@@ -3,7 +3,7 @@ Utils = {
         lib.notify({
             title = title,
             description = msg,
-            position = Config.notifyAlign,
+            position = 'top',
             type = type
         })
     end,
@@ -14,5 +14,13 @@ Utils = {
 
     heal = function()
         TriggerEvent('kni_ambulancejob:healPlayer', {heal = true})
+    end,
+
+    showTextUI = function(text)
+        lib.showTextUI(text)
+    end,
+
+    hideTextUI = function()
+        lib.hideTextUI()
     end
 }

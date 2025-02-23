@@ -3,528 +3,536 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Admin Menu</title>
-  <link rel="stylesheet" href="styles.css">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <title>Kinetic Dev Admin V2</title>
+  <!-- CSS -->
+  <link rel="stylesheet" href="style.css">
+  <!-- Fontawesome CSS -->
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel='stylesheet'>
 </head>
 <body>
-  <div id="menu-container" class="menu" style="display: none;">
-    <div id="sidebar" class="sidebar">
-      <div class="sidebar-header">
-        <img src="https://r2.fivemanage.com/KQGRRm8DukQthtgazMChN/images/kinetic-3.jpg" alt="Admin Logo" class="sidebar-logo">
-        <div class="sidebar-title">Admin Menu</div>
+  <div id="menu-container" class="menu-container" style="display: none;">
+  <!-- Sidebar navigation menu -->
+  <nav class="sidebar close">
+    <!-- Sidebar header containing logo and toggle button -->
+    <header>
+      <div class="image-text">
+        <span class="image">
+          <img src="logo.png" alt="Logo">
+        </span>
+        <div class="text logo-text">
+          <span class="top-text">Kinetic Dev</span>
+          <span class="bottom-text">FiveM Developer</span>
+        </div>
       </div>
-      <ul>
-        <li onclick="openTab('server-data')" class="server-data" role="button">Dashboard</li>
-        <li onclick="openTab('dashboard')" class="dashboardB" role="button">Admin Actions</li>
-        <li onclick="openTab('players')" class="players" role="button">Online Players</li>
-        <li onclick="openTab('resources')" class="resources" role="button">Resources</li>
-        <li onclick="openTab('logs')" class="logs" role="button">Logs</li>
-        <li onclick="openTab('settings')" class="settings" role="button">Settings</li>
-      </ul>
+      <i class='fa fa-angle-right toggle'></i>
+    </header>
+
+    <!-- Sidebar menu items -->
+    <div class="menu-bar">
+      <div class="menu">
+        <!-- List of menu links -->
+        <ul class="menu-links">
+          <li class="nav-link">
+            <a href="#" onclick="openTab('dashboard')">
+              <i class='fa fa-home-alt icon'></i>
+              <span class="tooltip">Dashboard</span>
+              <span class="text nav-text">Dashboard</span>
+            </a>       
+          </li>
+          <li class="nav-link">
+            <a href="#" onclick="openTab('admin')">
+              <i class='fa fa-user-gear icon'></i>
+              <span class="tooltip">Admin Actions</span>
+              <span class="text nav-text">Admin Actions</span>
+            </a>          
+          </li>
+          <li class="nav-link">
+            <a href="#" onclick="openTab('players')">
+              <i class='fa fa-users icon'></i>
+              <span class="tooltip">Online Players</span>
+              <span class="text nav-text">Online Players</span>
+            </a>          
+          </li>
+          <li class="nav-link">
+            <a href="#" onclick="openTab('resources')">
+              <i class='fa fa-list-ul icon'></i>
+              <span class="tooltip">Resources</span>
+              <span class="text nav-text">Resources</span>
+            </a>          
+          </li>
+          <li class="nav-link">
+            <a href="#" onclick="openTab('logs')">
+              <i class='fa fa-database icon'></i>
+              <span class="tooltip">Logs</span>
+              <span class="text nav-text">Logs</span>
+            </a>          
+          </li>
+        </ul>
+      </div>
+
+      <!-- Bottom content of the sidebar -->
+      <div class="bottom-content">
+        <!-- Dark mode toggle switch -->
+        <li class="mode">
+          <div class="sun-moon">
+            <i class='fa fa-moon icon moon'></i>
+            <i class='fa fa-sun icon sun'></i>
+          </div>
+          <span class="mode-text text">Dark mode</span>
+          <div class="toggle-switch">
+            <span class="switch"></span>
+          </div>
+        </li>
+      </div>
     </div>
-    
-    <div id="main-content" class="main-content">
-      <button onclick="closeMenu()" class="close-button" aria-label="Close Menu"><i class="fa fa-close"></i></button>
+  </nav>
 
-      <div id="server-data" class="tab active">
-        <div class="server-data-header">
-          <h2>Dashboard</h2>
+  <!-- Main content section -->
+  <section class="home">
+    <!-- Notify -->
+    <div id="notify-container"></div>
+    <button onclick="closeMenu()" class="close-button" aria-label="Close Menu"><i class="fa fa-close"></i></button>
+
+    <!-- Dashboard tab -->
+    <div id="dashboard" class="tab active">
+      <div class="header">
+        Dashboard
+      </div>
+      <div class="dashboard-container">
+        <div class="dashboard-section">
+          <h3>Resource Count</h3>
+          <p id="resource-count">Loading...</p>
         </div>
-      
-        <div class="server-data-container">
-          <div class="server-data-section">
-            <h3>Resource Count</h3>
-            <p id="resource-count">Loading...</p>
-          </div>
-      
-          <div class="server-data-section">
-            <h3>Player Count</h3>
-            <p id="player-count">Loading...</p>
-          </div>
-      
-          <div class="server-data-section">
-            <h3>Uptime</h3>
-            <p id="server-uptime">Loading...</p>
-          </div>
-      
-          <div class="server-data-section">
-            <h3>Script Version</h3>
-            <p id="server-version">Loading...</p>
-          </div>
+    
+        <div class="dashboard-section">
+          <h3>Player Count</h3>
+          <p id="player-count">Loading...</p>
+        </div>
+    
+        <div class="dashboard-section">
+          <h3>Uptime</h3>
+          <p id="server-uptime">Loading...</p>
+        </div>
+    
+        <div class="dashboard-section">
+          <h3>Script Version</h3>
+          <p id="server-version">Loading...</p>
         </div>
       </div>
+    </div>
 
-      <!-- Dashboard Tab -->
-      <div id="dashboard" class="tab">
-        <div class="dashboard-header">
-          <h2>Admin Actions</h2>
-        </div>
-
-      <!-- Self Options Section -->
-    <div class="dashboard">
+    <!-- Admin Actions tab -->
+    <div id="admin" class="tab">
+      <div class="header">
+        Admin Actions
+      </div>
+      <div class="admin-container">
         <!-- Left Side -->
         <div class="left-side">
-          <div class="dashboard-section">
+          <div class="admin-section">
             <h3>Self Options</h3>
             <div class="button-group">
-                <button onclick="selfRevive()" class="dashboard-btn"><i class="fa fa-heart"></i> Revive Self</button>
-                <button onclick="selfHeal()" class="dashboard-btn2"><i class="fa fa-medkit"></i> Heal Self</button>
-                <button onclick="openSelfMoneyDialog()" class="dashboard-btn3"><i class="fa fa-hand-holding-dollar"></i> Give Self Money</button>
-                <button onclick="openSelfItemDialog()" class="dashboard-btn4"><i class="fa fa-user-plus"></i> Give Self Item</button>
-                <button onclick="toggleNoClip()" class="dashboard-btn5"><i class="fa fa-user-plus"></i> Toggle NoClip</button>
-                <button onclick="toggleInvisibility()" class="dashboard-btn6"><i class="fa fa-user-plus"></i> Toggle Invisibility</button>
-                <button onclick="toggleGodMode()" class="dashboard-btn7"><i class="fa fa-user-plus"></i> Toggle GodMode</button>
+                <button onclick="selfRevive()" class="btn"><i class="fa fa-heart"></i> Revive Self</button>
+                <button onclick="selfHeal()" class="btn"><i class="fa fa-medkit"></i> Heal Self</button>
+                <button onclick="openDialog('selfMoney')" class="btn"><i class="fa fa-hand-holding-dollar"></i> Give Self Money</button>
+                <button onclick="openDialog('selfItem')" class="btn"><i class="fa fa-user-plus"></i> Give Self Item</button>
+                <button onclick="toggleNoClip()" class="btn"><i class="fa fa-user-plus"></i> Toggle NoClip</button> 
+                <button onclick="toggleInvisibility()" class="btn"><i class="fa fa-user-plus"></i> Toggle Invisibility</button>
+                <button onclick="toggleGodMode()" class="btn"><i class="fa fa-user-plus"></i> Toggle GodMode</button>
             </div>
           </div>
-
-          <div class="dashboard-section">
+          <div class="admin-section">
             <h3>Vehicle Options</h3>
             <div class="button-group">
-                <button onclick="openSpawnCarDialog()" class="dashboard-btn8"><i class="fa fa-car"></i> Spawn Vehicle</button>
-                <button onclick="deleteVehicle()" class="dashboard-btn9"><i class="fa fa-trash"></i> Delete Vehicle</button>
-                <button onclick="repairVehicle()" class="dashboard-btn10"><i class="fa fa-wrench"></i> Repair Vehicle</button>
+                <button onclick="openDialog('spawnCar')" class="btn"><i class="fa fa-car"></i> Spawn Vehicle</button>
+                <button onclick="deleteVehicle()" class="btn"><i class="fa fa-trash"></i> Delete Vehicle</button>
+                <button onclick="repairVehicle()" class="btn"><i class="fa fa-wrench"></i> Repair Vehicle</button>
             </div>
           </div>
-
         </div>
-
-        <div id="dialog" class="dialog-overlay">
-          <div class="dialog-box">
-              <h2>Select Account</h2>
-      
-              <!-- Account Type Dropdown -->
-              <select id="accountType">
-                  <option value="money">Cash</option>
-                  <option value="bank">Bank</option>
-              </select>
-      
-              <br>
-              <h2>Enter Amount</h2>
-      
-              <!-- Amount Input -->
-              <input type="number" id="itemAmount" min="1" max="999999999" value="1">
-              <br>
-      
-              <!-- Buttons -->
-              <button class="confirm-btn" onclick="confirmAmount()">Confirm</button>
-              <button class="cancel-btn" onclick="closeSelfMoneyDialog()">Cancel</button>
-          </div>
-        </div>      
-
-        <div id="self-item-dialog" class="dialog-overlay">
-          <div class="dialog-box">
-              <h2>Enter Item Name</h2>
-      
-              <input type="text" id="selfItemName">
-      
-              <br>
-              <h2>Enter Amount</h2>
-      
-              <!-- Amount Input -->
-              <input type="number" id="selfItemQuantity" min="1" max="999999999" value="1">
-              <br>
-      
-              <!-- Buttons -->
-              <button class="confirm-btn" onclick="confirmSelfItem()">Confirm</button>
-              <button class="cancel-btn" onclick="closeSelfItemDialog()">Cancel</button>
-          </div>
-        </div> 
-
-        <div id="spawn-car-dialog" class="dialog-overlay">
-          <div class="dialog-box">
-            <h2>Enter Car Model</h2>
-            <input type="text" id="carModel">
-            <br>
-            <button class="confirm-btn" onclick="confirmSpawnCar()">Confirm</button>
-            <button class="cancel-btn" onclick="closeSpawnCarDialog()">Cancel</button>
-          </div>
-        </div>
-
-        <!-- Right Side -->
         <div class="right-side">
 
-          <div class="dashboard-section">
+          <div class="admin-section">
             <h3>Server Options</h3>
             <div class="button-group">
-              <button onclick="unbanDialog()" class="dashboard-btn11"><i class="fa fa-user-check"></i> Unban A Player</button>
-              <button onclick="announcementDialog()" class="dashboard-btn12"><i class="fa fa-bullhorn"></i> Announcement</button>
-              <button onclick="deleteVehicles()" class="dashboard-btn13"><i class="fa fa-folder-minus"></i> Vehicle Wipe</button>
-              <button onclick="deleteObjects()" class="dashboard-btn14"><i class="fa fa-folder-minus"></i> Object Wipe</button>
-              <button onclick="deletePeds()" class="dashboard-btn15"><i class="fa fa-folder-minus"></i> Ped Wipe</button>
+              <button onclick="openDialog('announcement')" class="btn"><i class="fa fa-bullhorn"></i> Announcement</button>
+              <button onclick="deleteVehicles()" class="btn"><i class="fa fa-folder-minus"></i> Vehicle Wipe</button>
+              <button onclick="deleteObjects()" class="btn"><i class="fa fa-folder-minus"></i> Object Wipe</button>
+              <button onclick="deletePeds()" class="btn"><i class="fa fa-folder-minus"></i> Ped Wipe</button>
             </div>
           </div>
-
-          <div class="dashboard-section">
-              <h3>Developer Options</h3>
-              <div class="button-group">
-                <button onclick="coordsDialog()" class="dashboard-btn16"><i class="fa fa-location-dot"></i> Copy Coords</button>
-                <button onclick="tpCoordsDialog()" class="dashboard-btn17"><i class="fa fa-map-marker-alt"></i> TP To Coords</button>
-              </div>
-          </div>
-
-          <div id="unban-dialog" class="dialog-overlay">
-            <div class="dialog-box">
-              <h2>Enter License</h2>
-              <input type="text" id="license">
-              <br>
-              <button class="confirm-btn" onclick="confirmUnban()">Confirm</button>
-              <button class="cancel-btn" onclick="closeUnbanDialog()">Cancel</button>
+          <div class="admin-section">
+            <h3>Developer Options</h3>
+            <div class="button-group">
+              <button onclick="openDialog('copyCoords')" class="btn"><i class="fa fa-location-dot"></i> Copy Coords</button>
+              <button onclick="openDialog('tpCoords')" class="btn"><i class="fa fa-map-marker-alt"></i> TP To Coords</button>
             </div>
           </div>
-
-          <div id="announcement-dialog" class="dialog-overlay">
-            <div class="dialog-box">
-              <h2>Enter Announcement</h2>
-              <input type="text" id="announcement">
-              <br>
-              <button class="confirm-btn" onclick="confirmAnnouncement()">Confirm</button>
-              <button class="cancel-btn" onclick="closeAnnouncementDialog()">Cancel</button>
-            </div>
-          </div>
-
-          <div id="coords-dialog" class="dialog-overlay">
-            <div class="dialog-box">
-                <h2>Select Type</h2>
-        
-                <!-- Coord Type Dropdown -->
-                <select id="coordsType">
-                  <option value="xyz">x, y, z</option>
-                  <option value="vec3">vec3(0.0, 0.0, 0.0)</option>
-                  <option value="vec4">vec4(0.0, 0.0, 0.0, 0.0)</option>
-                </select>
-        
-                <br>
-        
-                <!-- Buttons -->
-                <button class="confirm-btn" onclick="confirmCoords()">Confirm</button>
-                <button class="cancel-btn" onclick="closeCoordsDialog()">Cancel</button>
-            </div>
-          </div>
-
-          <div id="tpCoords-dialog" class="dialog-overlay">
-            <div class="dialog-box">
-              <h2>Enter Coords (x, y, z)</h2>
-              <input type="text" id="tp_vec3">
-              <br>
-              <button class="confirm-btn" onclick="confirmTp()">Confirm</button>
-              <button class="cancel-btn" onclick="closeTpDialog()">Cancel</button>
-            </div>
-          </div>
-
         </div>
       </div>
     </div>
 
-      <!-- Players Tab -->
-      <div id="players" class="tab">
-        <div class="online">
-          <div class="title-online">
-            <h2>Online Players</h2>
+    <!-- Online Players tab -->
+    <div id="players" class="tab">
+      <div class="header">
+        Online Players
+      </div>
+      <div class="online">
+        <div class="online-container">
+          <table id="online-table">
+            <tbody class="online-table">
+              <tr class="table-row-online">
+                <td class="online-name">Player 1</td>
+                <td class="online-id">1</td>
+              </tr>
+
+              <tr class="table-row-online">
+                <td class="online-name">Player 2</td>
+                <td class="online-id">2</td>
+              </tr>
+
+              <tr class="table-row-online">
+                <td class="online-name">Player 3</td>
+                <td class="online-id">3</td>
+              </tr>
+
+              <tr class="table-row-online">
+                <td class="online-name">Player 4</td>
+                <td class="online-id">4</td>
+              </tr>
+
+              <tr class="table-row-online">
+                <td class="online-name">Player 5</td>
+                <td class="online-id">5</td>
+              </tr>
+
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- Selected Player tab -->
+    <div id="selectedPlayer" class="tab">
+      <div class="header">
+        Player Management
+        <button id="returnButton" class="return-button" onclick="openTab('players')" aria-label="Return">
+          ⬅️
+        </button>
+      </div>
+    
+      <div class="selected-player-container">
+        <div class="selected-player-section">
+          <h3>Player Details</h3>
+          <p id="selected-player-name">Loading...</p>
+          <p id="selected-player-id">Loading...</p>
+        </div>
+
+        <div class="selected-player-section">
+          <h3>Player Data</h3>
+          <p id="selected-player-job">Loading...</p>
+          <p id="selected-player-cash">Loading...</p>
+          <p id="selected-player-bank">Loading...</p>
+        </div>
+
+        <div class="selected-player-section">
+          <h3>Player Options</h3>
+          <div class="button-group">
+            <button class="btn" onclick="openDialog('kick')" ><i class="fa fa-x"></i >Kick Player</button> 
+            <button class="btn" onclick="openDialog('ban')" ><i class="fa fa-ban"></i >Ban Player</button>
+            <button class="btn" onclick="spectatePlayer()" ><i class="fa fa-eye"></i >Spectate Player</button>
+            <button class="btn" onclick="gotoPlayer()" ><i class="fa fa-location-dot"></i >Goto Player</button>
+            <button class="btn" onclick="bringPlayer()" ><i class="fa fa-location-dot"></i >Bring Player</button>
+            <button class="btn" onclick="revivePlayer()" ><i class="fa fa-heart"></i >Revive Player</button>
+            <button class="btn" onclick="healPlayer()" ><i class="fa fa-heart"></i >Heal Player</button>
+            <button class="btn" onclick="openDialog('playerMoney')" ><i class="fa fa-money-bill"></i >Give Money</button>
+            <button class="btn" onclick="openDialog('removePlayerMoney')" ><i class="fa fa-money-bill"></i >Remove Money</button>
+            <button class="btn" onclick="openDialog('playerJob')" ><i class="fa fa-user"></i >Set Job</button>
           </div>
-          <div class="online-container">
-            <table id="online-table">
-              <tbody class="online-table">
-                <tr class="table-row-online">
-                  <td class="online-avatar"><img id="online-avatar-img" src="https://r2.fivemanage.com/KQGRRm8DukQthtgazMChN/images/kinetic-3.jpg" alt="Avatar"></td>
-                  <td class="online-name">Keith</td>
-                  <td class="online-id">1</td>
-                </tr>
+        </div>
 
-                <tr class="table-row-online">
-                  <td class="online-avatar"><img id="online-avatar-img" src="https://r2.fivemanage.com/KQGRRm8DukQthtgazMChN/images/kinetic-3.jpg" alt="Avatar"></td>
-                  <td class="online-name">Keith</td>
-                  <td class="online-id">2</td>
-                </tr>
+        <div class="selected-player-section">
+          <h3>Inventory Options</h3>
+          <div class="button-group">
+            <button class="btn" onclick="openDialog('playerItem')" ><i class="fa fa-user-plus"></i >Give Item</button>
+            <button class="btn" onclick="openDialog('removePlayerItem')" ><i class="fa fa-user-minus"></i >Remove Item</button>
+          </div>
+        </div>
+      </div>
+    </div>
 
-                <tr class="table-row-online">
-                  <td class="online-avatar"><img id="online-avatar-img" src="https://r2.fivemanage.com/KQGRRm8DukQthtgazMChN/images/kinetic-3.jpg" alt="Avatar"></td>
-                  <td class="online-name">Keith</td>
-                  <td class="online-id">3</td>
-                </tr>
+    <!-- Resources tab -->
+    <div id="resources" class="tab">
+      <div class="header">
+        Resource Management
+        <div class="search-container">
+          <input type="text" id="resourceSearch" placeholder="🔍 Search resources (name or state)" />
+          <button id="refreshResources" class="refresh-button" onclick="fetchResources()" aria-label="Refresh Resources">
+            🔄
+          </button>
+        </div> 
+      </div>
+      <div class="resource-list">
+        <div class="resources-container">        
+          <table id="resources-table">
+            <tbody class="resources-table">
+              <tr class="table-row-resources">
+                <td class="resources-name">kd_adminpanel</td>
+                <td class="resources-state">Started</td>
+              </tr>
 
-                <tr class="table-row-online">
-                  <td class="online-avatar"><img id="online-avatar-img" src="https://r2.fivemanage.com/KQGRRm8DukQthtgazMChN/images/kinetic-3.jpg" alt="Avatar"></td>
-                  <td class="online-name">Keith</td>
-                  <td class="online-id">3</td>
-                </tr>
+              <tr class="table-row-resources">
+                <td class="resources-name">kd_adminpanel</td>
+                <td class="resources-state">Stopped</td>
+              </tr>
 
-                <tr class="table-row-online">
-                  <td class="online-avatar"><img id="online-avatar-img" src="https://r2.fivemanage.com/KQGRRm8DukQthtgazMChN/images/kinetic-3.jpg" alt="Avatar"></td>
-                  <td class="online-name">Keith</td>
-                  <td class="online-id">3</td>
-                </tr>
+              <tr class="table-row-resources">
+                <td class="resources-name">kd_adminpanel</td>
+                <td class="resources-state">Stopped</td>
+              </tr>
 
-                <tr class="table-row-online">
-                  <td class="online-avatar"><img id="online-avatar-img" src="https://r2.fivemanage.com/KQGRRm8DukQthtgazMChN/images/kinetic-3.jpg" alt="Avatar"></td>
-                  <td class="online-name">Keith</td>
-                  <td class="online-id">3</td>
-                </tr>
+              <tr class="table-row-resources">
+                <td class="resources-name">kd_adminpanel</td>
+                <td class="resources-state">Stopped</td>
+              </tr>
 
-                <tr class="table-row-online">
-                  <td class="online-avatar"><img id="online-avatar-img" src="https://r2.fivemanage.com/KQGRRm8DukQthtgazMChN/images/kinetic-3.jpg" alt="Avatar"></td>
-                  <td class="online-name">Keith</td>
-                  <td class="online-id">3</td>
-                </tr>
+              <tr class="table-row-resources">
+                <td class="resources-name">kd_adminpanel</td>
+                <td class="resources-state">Stopped</td>
+              </tr>
 
-                <tr class="table-row-online">
-                  <td class="online-avatar"><img id="online-avatar-img" src="https://r2.fivemanage.com/KQGRRm8DukQthtgazMChN/images/kinetic-3.jpg" alt="Avatar"></td>
-                  <td class="online-name">Keith</td>
-                  <td class="online-id">3</td>
-                </tr>
+              <tr class="table-row-resources">
+                <td class="resources-name">kd_adminpanel</td>
+                <td class="resources-state">Stopped</td>
+              </tr>
 
-                <tr class="table-row-online">
-                  <td class="online-avatar"><img id="online-avatar-img" src="https://r2.fivemanage.com/KQGRRm8DukQthtgazMChN/images/kinetic-3.jpg" alt="Avatar"></td>
-                  <td class="online-name">Keith</td>
-                  <td class="online-id">3</td>
-                </tr>
+              <tr class="table-row-resources">
+                <td class="resources-name">kd_adminpanel</td>
+                <td class="resources-state">Stopped</td>
+              </tr>
 
-                <tr class="table-row-online">
-                  <td class="online-avatar"><img id="online-avatar-img" src="https://r2.fivemanage.com/KQGRRm8DukQthtgazMChN/images/kinetic-3.jpg" alt="Avatar"></td>
-                  <td class="online-name">Keith</td>
-                  <td class="online-id">3</td>
-                </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
 
-                <tr class="table-row-online">
-                  <td class="online-avatar"><img id="online-avatar-img" src="https://r2.fivemanage.com/KQGRRm8DukQthtgazMChN/images/kinetic-3.jpg" alt="Avatar"></td>
-                  <td class="online-name">Keith</td>
-                  <td class="online-id">3</td>
-                </tr>
-
+    <!-- Logs tab -->
+    <div id="logs" class="tab">
+      <div class="header">
+        Logs
+      </div>
+      <div id="logs-tab">
+          <table id="logs-table">
+              <thead>
+                  <tr>
+                      <th>Timestamp</th>
+                      <th>Action</th>
+                      <th>Admin</th>
+                      <th>Target</th>
+                      <th>Details</th>
+                  </tr>
+              </thead>
+              <tbody id="logs-table-body">                   
               </tbody>
-            </table>
-          </div>
-        </div>
-      </div>
-
-      <!-- Quick Actions Menu -->
-      <div id="quick-actions-menu" class="quick-actions-menu">
-        <div class="menu-header">
-          <div id="selected-player-name" class="selected-player-name">Selected Player: None</div>
-          <button class="close-btn" onclick="closeQuickActionsMenu()">X</button>
-        </div>
-        <div class="action-buttons">
-          <button class="quick-actions-btn1" onclick="openKickDialog()">Kick Player</button>
-          <button class="quick-actions-btn2" onclick="openBanDialog()">Ban Player</button>
-          <button class="quick-actions-btn3" onclick="gotoPlayer()">Goto Player</button>
-          <button class="quick-actions-btn4" onclick="bringPlayer()">Bring Player</button>
-          <button class="quick-actions-btn5" onclick="revivePlayer()">Revive Player</button>
-          <button class="quick-actions-btn6" onclick="healPlayer()">Heal Player</button>
-          <button class="quick-actions-btn7" onclick="openItemDialog()">Give Item</button>
-          <button class="quick-actions-btn8" onclick="openPMoneyDialog()">Give Money</button>
-          <button class="quick-actions-btn9" onclick="openPJobDialog()">Set Job</button>
-        </div>
-
-        <!-- Ban Dialog -->
-        <div id="ban-dialog" class="dialog-overlay">
-          <div class="dialog-box">
-            <h2>Enter Reason</h2>
-            <input type="text" id="banReason" aria-label="Enter ban reason">
-            <br>
-            <h2>Select Time</h2>
-        
-            <!-- Ban Time Dropdown -->
-            <select id="banTime">
-                <option value="2"> 2 Hours</option>
-                <option value="24"> 24 Hours</option>
-                <option value="168"> 1 Week</option>
-                <option value="1000000"> Permanent</option>
-            </select>
-    
-            <br>
-            <button class="confirm-btn" onclick="confirmBan()">Confirm</button>
-            <button class="cancel-btn" onclick="closeBanDialog()">Cancel</button>
-          </div>
-        </div>
-
-        <!-- Kick Dialog -->
-        <div id="kick-dialog" class="dialog-overlay">
-          <div class="dialog-box">
-            <h2>Enter Reason</h2>
-            <input type="text" id="kickReason" aria-label="Enter kick reason">
-            <br>
-            <button class="confirm-btn" onclick="confirmKick()">Confirm</button>
-            <button class="cancel-btn" onclick="closeKickDialog()">Cancel</button>
-          </div>
-        </div>
-
-        <!-- Item Dialog -->
-       <div id="item-dialog" class="dialog-overlay">
-          <div class="dialog-box">
-            <h2>Enter Item Name</h2>
-            <input type="text" id="itemName" aria-label="Enter item name">
-            <br>
-            <h2>Enter Item Amount</h2>
-            <input type="number" id="itemQuantity" min="1" max="1000" value="1" aria-label="Enter item quantity">
-            <br>
-            <button class="confirm-btn" onclick="confirmItem()">Confirm</button>
-            <button class="cancel-btn" onclick="closeItemDialog()">Cancel</button>
-          </div>
-        </div>
-      </div>
-
-      <!-- Money Dialog -->
-      <div id="pMoney-dialog" class="dialog-overlay">
-        <div class="dialog-box">
-            <h2>Select Account</h2>
-    
-            <!-- Account Type Dropdown -->
-            <select id="pAccountType">
-                <option value="money">Cash</option>
-                <option value="bank">Bank</option>
-            </select>
-    
-            <br>
-            <h2>Enter Amount</h2>
-    
-            <!-- Amount Input -->
-            <input type="number" id="pAmount" min="1" max="999999999" value="1">
-            <br>
-    
-            <!-- Buttons -->
-            <button class="confirm-btn" onclick="confirmPMoney()">Confirm</button>
-            <button class="cancel-btn" onclick="closePMoneyDialog()">Cancel</button>
-        </div>
-      </div> 
-      
-      <!-- Job Dialog -->
-      <div id="pJob-dialog" class="dialog-overlay">
-        <div class="dialog-box">
-          <h2>Enter Job Name</h2>
-          <input type="text" id="pJob" aria-label="Enter job name">
-          <br>
-          <h2>Enter Job Grade</h2>
-          <input type="number" id="pGrade" min="1" max="10" value="1" aria-label="Enter job grade">
-          <br>
-          <button class="confirm-btn" onclick="confirmPJob()">Confirm</button>
-          <button class="cancel-btn" onclick="closePJobDialog()">Cancel</button>
-        </div>
-      </div>
-
-      <!-- Resources Tab -->
-      <div id="resources" class="tab">
-        <div class="resource-list">
-          <div class="resources-container">
-            <div class="resource-header">
-              <h2 id="title-resources">Resources</h2>
-              <div class="search-container">
-                  <input type="text" id="resourceSearch" placeholder="🔍 Search resources (name or state)" />
-                  <button id="refreshResources" class="refresh-button" onclick="fetchResources()" aria-label="Refresh Resources">
-                    🔄
-                </button>
-              </div>
-            </div>          
-            <table id="resources-table">
-              <tbody class="resources-table">
-                <tr class="table-row-resources">
-                  <td class="resources-name">kd_adminpanel</td>
-                  <td class="resources-state">Started</td>
-                </tr>
-
-                <tr class="table-row-resources">
-                  <td class="resources-name">kd_adminpanel</td>
-                  <td class="resources-state">Stopped</td>
-                </tr>
-
-                <tr class="table-row-resources">
-                  <td class="resources-name">kd_adminpanel</td>
-                  <td class="resources-state">Stopped</td>
-                </tr>
-
-                <tr class="table-row-resources">
-                  <td class="resources-name">kd_adminpanel</td>
-                  <td class="resources-state">Stopped</td>
-                </tr>
-
-                <tr class="table-row-resources">
-                  <td class="resources-name">kd_adminpanel</td>
-                  <td class="resources-state">Stopped</td>
-                </tr>
-
-                <tr class="table-row-resources">
-                  <td class="resources-name">kd_adminpanel</td>
-                  <td class="resources-state">Stopped</td>
-                </tr>
-
-                <tr class="table-row-resources">
-                  <td class="resources-name">kd_adminpanel</td>
-                  <td class="resources-state">Stopped</td>
-                </tr>
-
-              </tbody>
-            </table>
-          </div>
-        </div>
-      </div>
-
-      <div id="manage-resource-menu" class="manage-resource-menu">
-        <div class="manage-resource-menu-header">
-          <div id="selected-resource-name" class="selected-resource-name">Selected Resource: None</div>
-          <button class="manage-resource-menu-close-btn" onclick="closeManageResourceMenu()">X</button>
-        </div>
-        <div class="action-buttons">
-          <button class="restart-btn" onclick="restartResource()">Restart Resource</button>
-          <button class="start-btn" onclick="startResource()">Start Resource</button>
-          <button class="stop-btn" onclick="stopResource()">Stop Resource</button>
+          </table>
       </div>
     </div>
+  </section>
+</div>
 
-      <div id="logs" class="tab">
-        <div class="title-logs">
-          <h2>Action Logs</h2>
-        </div>
-        <div id="logs-tab">
-            <table id="logs-table">
-                <thead>
-                    <tr>
-                        <th>Timestamp</th>
-                        <th>Action</th>
-                        <th>Admin</th>
-                        <th>Target</th>
-                        <th>Details</th>
-                    </tr>
-                </thead>
-                <tbody id="logs-table-body">                   
-                </tbody>
-            </table>
-        </div>
-    </div>    
+<!-- Dialogs -->
+<div id="selfMoney" class="dialog-overlay">
+  <div class="dialog-box">
+      <h2>Select Account</h2>
+      <select id="selfMoney-accountType">
+          <option value="money">Cash</option>
+          <option value="bank">Bank</option>
+      </select>
+      <br>
+      <h2>Enter Amount</h2>
+      <input type="number" id="selfMoney-amount" min="1" max="999999999" value="1" oninput="enforceMax(this)">
+      <br>
+      <button class="dialog-confirm-btn" onclick="confirmSelfMoney()">Confirm</button>
+      <button class="dialog-cancel-btn" onclick="closeDialog('selfMoney')">Cancel</button>
+  </div>
+</div> 
 
-    <div id="settings" class="tab">
-      <div class="settings-header">
-        <h2>Settings</h2>
+<div id="selfItem" class="dialog-overlay">
+  <div class="dialog-box">
+      <h2>Select Item Name</h2>
+      <select id="selfItemName" aria-label="Select an item">
+        <!-- Options will dynamically add here -->
+      </select>
+      <div style="margin-top: 20px;">
+        <h2>Enter Amount</h2>
+        <input type="number" id="selfItemQuantity" min="1" max="100" value="1">
       </div>
-    
-      <div class="settings-container">
+      <br>
+      <button class="dialog-confirm-btn" onclick="confirmSelfItem()">Confirm</button>
+      <button class="dialog-cancel-btn" onclick="closeDialog('selfItem')">Cancel</button>
+  </div>
+</div>
 
-        <div class="settings-box">
-          <h3>Menu Colors</h3>
-          <div>
-            <label for="primary-color" class="color-label">Primary Color:</label>
-            <input type="color" id="primary-color" value="#ff0000" onchange="updatePrimaryColor(this.value)">
-          </div>
-          <div>
-            <label for="secondary-color" class="color-label">Secondary Color:</label>
-            <input type="color" id="secondary-color" value="#0a0a0a" onchange="updateSecondaryColor(this.value)">
-          </div>
-        </div>
-    
-        <div class="settings-box">
-          <h3>Menu Size</h3>
-          <div>
-            <label for="menu-size" class="size-label">Menu Size:</label>
-            <input type="range" id="menu-size" min="60" max="80" step="5" onchange="updateMenuSize(this.value)">
-          </div>
-        </div>
-    
-        <div class="settings-box">
-          <h3>Menu Position</h3>
-          <button onclick="enableDragMode()" class="edit-pos-button">Edit Position</button>
-          <button onclick="savePosition()" class="save-pos-button" id="save-position-btn" hidden>Save Position</button>
-        </div>
-      </div>
-    </div>
-    
-  <script src="script.js"></script>
+<div id="spawnCar" class="dialog-overlay">
+  <div class="dialog-box">
+    <h2>Enter Car Model</h2>
+    <input type="text" id="carModel">
+    <br>
+    <button class="dialog-confirm-btn" onclick="confirmSpawnCar()">Confirm</button>
+    <button class="dialog-cancel-btn" onclick="closeDialog('spawnCar')">Cancel</button>
+  </div>
+</div>
+
+<div id="announcement" class="dialog-overlay">
+  <div class="dialog-box">
+    <h2>Enter Announcement</h2>
+    <input type="text" id="announcementMsg">
+    <br>
+    <button class="dialog-confirm-btn" onclick="confirmAnnouncement()">Confirm</button>
+    <button class="dialog-cancel-btn" onclick="closeDialog('announcement')">Cancel</button>
+  </div>
+</div>
+
+<div id="copyCoords" class="dialog-overlay">
+  <div class="dialog-box">
+      <h2>Select Type</h2>
+      <select id="coordsType">
+        <option value="h">heading</option>
+        <option value="xyz">x, y, z</option>
+        <option value="vec3">vec3(0.0, 0.0, 0.0)</option>
+        <option value="vec4">vec4(0.0, 0.0, 0.0, 0.0)</option>
+      </select>
+      <br>
+      <button class="dialog-confirm-btn" onclick="confirmCoords()">Confirm</button>
+      <button class="dialog-cancel-btn" onclick="closeDialog('copyCoords')">Cancel</button>
+  </div>
+</div>
+
+<div id="tpCoords" class="dialog-overlay">
+  <div class="dialog-box">
+    <h2>Enter Coords (x, y, z)</h2>
+    <input type="text" id="tp_vec3">
+    <br>
+    <button class="dialog-confirm-btn" onclick="confirmTp()">Confirm</button>
+    <button class="dialog-cancel-btn" onclick="closeDialog('tpCoords')">Cancel</button>
+  </div>
+</div>
+
+<div id="kick" class="dialog-overlay">
+  <div class="dialog-box">
+    <h2>Enter Reason</h2>
+    <input type="text" id="kickReason" aria-label="Enter kick reason">
+    <br>
+    <button class="dialog-confirm-btn" onclick="confirmKick()">Confirm</button>
+    <button class="dialog-cancel-btn" onclick="closeDialog('kick')">Cancel</button>
+  </div>
+</div>
+
+<div id="ban" class="dialog-overlay">
+  <div class="dialog-box">
+    <h2>Enter Reason</h2>
+    <input type="text" id="banReason" aria-label="Enter ban reason">
+    <br>
+    <h2>Select Time</h2>
+
+    <select id="banTime">
+        <option value="2"> 2 Hours</option>
+        <option value="24"> 24 Hours</option>
+        <option value="168"> 1 Week</option>
+        <option value="1000000"> Permanent</option>
+    </select>
+
+    <br>
+    <button class="dialog-confirm-btn" onclick="confirmBan()">Confirm</button>
+    <button class="dialog-cancel-btn" onclick="closeDialog('ban')">Cancel</button>
+  </div>
+</div>
+
+<div id="playerMoney" class="dialog-overlay">
+  <div class="dialog-box">
+      <h2>Select Account</h2>
+      <select id="playerMoney-accountType">
+          <option value="money">Cash</option>
+          <option value="bank">Bank</option>
+      </select>
+      <br>
+      <h2>Enter Amount</h2>
+      <input type="number" id="playerMoney-amount" min="1" max="999999999" value="1" oninput="enforceMax(this)">
+      <br>
+      <button class="dialog-confirm-btn" onclick="confirmPlayerMoney()">Confirm</button>
+      <button class="dialog-cancel-btn" onclick="closeDialog('playerMoney')">Cancel</button>
+  </div>
+</div> 
+
+<div id="removePlayerMoney" class="dialog-overlay">
+  <div class="dialog-box">
+      <h2>Select Account</h2>
+      <select id="removePlayerMoney-accountType">
+          <option value="money">Cash</option>
+          <option value="bank">Bank</option>
+      </select>
+      <br>
+      <h2>Enter Amount</h2>
+      <input type="number" id="removePlayerMoney-amount" min="1" max="999999999" value="1">
+      <br>
+      <button class="dialog-confirm-btn" onclick="confirmRemovePlayerMoney()">Confirm</button>
+      <button class="dialog-cancel-btn" onclick="closeDialog('removePlayerMoney')">Cancel</button>
+  </div>
+</div> 
+
+<div id="playerJob" class="dialog-overlay">
+  <div class="dialog-box">
+    <h2>Enter Job Name</h2>
+    <input type="text" id="pJob" aria-label="Enter job name">
+    <br>
+    <h2>Enter Job Grade</h2>
+    <input type="number" id="pGrade" min="1" max="10" value="1" aria-label="Enter job grade">
+    <br>
+    <button class="dialog-confirm-btn" onclick="confirmPlayerJob()">Confirm</button>
+    <button class="dialog-cancel-btn" onclick="closeDialog('playerJob')">Cancel</button>
+  </div>
+</div>
+
+<div id="playerItem" class="dialog-overlay">
+  <div class="dialog-box">
+      <h2>Select Item Name</h2>
+      <select id="playerItemName" aria-label="Select an item">
+      <br>
+      <h2>Enter Amount</h2>
+      <input type="number" id="playerItemQuantity" min="1" max="100" value="1">
+      <br>
+      <button class="dialog-confirm-btn" onclick="confirmPlayerItem()">Confirm</button>
+      <button class="dialog-cancel-btn" onclick="closeDialog('playerItem')">Cancel</button>
+  </div>
+</div> 
+
+<div id="removePlayerItem" class="dialog-overlay">
+  <div class="dialog-box">
+      <h2>Select Item Name</h2>
+      <select id="removePlayerItemName" aria-label="Select an item">
+      <br>
+      <h2>Enter Amount</h2>
+      <input type="number" id="removePlayerItemQuantity" min="1" max="100" value="1">
+      <br>
+      <button class="dialog-confirm-btn" onclick="confirmRemovePlayerItem()">Confirm</button>
+      <button class="dialog-cancel-btn" onclick="closeDialog('removePlayerItem')">Cancel</button>
+  </div>
+</div> 
+
+<!-- Action Menus -->
+<div id="manage-resource-menu" class="manage-resource-menu">
+  <div class="manage-resource-menu-header">
+    <div id="selected-resource-name" class="selected-resource-name">Selected Resource: None</div>
+    <button class="manage-resource-menu-close-btn" onclick="closeManageResourceMenu()">X</button>
+  </div>
+  <div class="action-buttons">
+    <button class="restart-btn" onclick="restartResource()">Restart Resource</button>
+    <button class="start-btn" onclick="startResource()">Start Resource</button>
+    <button class="stop-btn" onclick="stopResource()">Stop Resource</button>
+  </div>
+</div>
+
+<script src="script.js"></script>
 </body>
 </html>

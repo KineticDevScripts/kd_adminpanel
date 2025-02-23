@@ -1,44 +1,45 @@
-local ESX = exports['es_extended']:getSharedObject()
-
+local group 
 LocalPlayer.state.menuOpen = false
 LocalPlayer.state.invisible = false
 LocalPlayer.state.godMode = false
-local group
 
-if Config.commands['openMenu'].enabled then
-    RegisterCommand(Config.commands['openMenu'].name, function(source, args)
-        ESX.TriggerServerCallback('kd_adminpanel:checkGroup', function(canOpen, playerGroup)
-            if canOpen then
-                group = playerGroup
-                if canUseAction('open') then
-                    openMenu()
-                end
-            else
-                Utils.notify('Error',L('notify.error.notAdmin'), 'error')
+if Config.commands['adminMenu'].enabled then
+    RegisterCommand(Config.commands['adminMenu'].name, function(source, args)
+        lib.callback('kd_adminpanel:checkGroup', false, function(playerGroup)
+            group = playerGroup
+            if canUseAction('open') and not LocalPlayer.state.menuOpen then
+                openMenu()
             end
         end)
     end)
 end
 
-if Config.commands['openMenu'].keybind.enabled then
+if Config.commands['banList'].enabled then
+    RegisterCommand(Config.commands['banList'].name, function(source, args)
+        lib.callback('kd_adminpanel:checkGroup', false, function(playerGroup)
+            group = playerGroup
+            if canUseAction('banList') then
+                openBanList()
+            end
+        end)
+    end)
+end
+
+if Config.keys['adminMenu'].enabled then
     local keybind = lib.addKeybind({
         name = 'adminmenu',
-        description = Config.commands['openMenu'].keybind.help,
-        defaultKey = Config.commands['openMenu'].keybind.key,
+        description = Config.keys['adminMenu'].desc,
+        defaultKey = Config.keys['adminMenu'].key,
         onPressed = function(self)
-            ESX.TriggerServerCallback('kd_adminpanel:checkGroup', function(canOpen, playerGroup)
-                if canOpen then
-                    group = playerGroup
-                    if canUseAction('open') then
-                        openMenu()
-                    end
-                else
-                    Utils.notify('Error',L('notify.error.notAdmin'), 'error')
+            lib.callback('kd_adminpanel:checkGroup', false, function(playerGroup)
+                group = playerGroup
+                if canUseAction('open') and not LocalPlayer.state.menuOpen then
+                    openMenu()
                 end
             end)
         end
     })
-end 
+end
 
 RegisterNetEvent('kd_adminpanel:sendOnlinePlayers')
 AddEventHandler('kd_adminpanel:sendOnlinePlayers', function(players)
@@ -70,51 +71,16 @@ AddEventHandler('kd_adminpanel:addLog', function(timestamp, action, admin, targe
     })
 end)
 
-RegisterNetEvent("kd_adminpanel:sendPlayerSettings")
-AddEventHandler("kd_adminpanel:sendPlayerSettings", function(settings)
-    SendNUIMessage({
-        action = "applySettings",
-        settings = settings,
-    })
-end)
-
-Citizen.CreateThread(function()
-    TriggerServerEvent("kd_adminpanel:getPlayerSettings")
-end)
-
 function openMenu()
-    if not canUseAction('open') then return end
-    LocalPlayer.state.menuOpen = not LocalPlayer.state.menuOpen
-    SetNuiFocus(LocalPlayer.state.menuOpen, LocalPlayer.state.menuOpen)
-    SendNUIMessage({
-        action = LocalPlayer.state.menuOpen and "showMenu" or "hideMenu"
-    })
-end
-
-function toggleInvisibility(enabled)
-    if canUseAction('invisibility') and enabled and LocalPlayer.state.invisible then return end
-    LocalPlayer.state.invisible = enabled
-    SetEntityVisible(cache.ped, not enabled)
-
-    if enabled then
-        lib.showTextUI(L('textUI.invisibility'))
-    else
-        lib.hideTextUI()
-    end
-end
-
-function godMode()
-    if not canUseAction('godMode') then return end
-    LocalPlayer.state.godMode = not LocalPlayer.state.godMode
+    if LocalPlayer.state.menuOpen then return end
     
-    if LocalPlayer.state.godMode then
-        SetPlayerInvincible(PlayerId(), true)
-        while LocalPlayer.state.godMode do
-            Wait(0)
-            lib.showTextUI(L('textUI.godMode'))
-        end
-        lib.hideTextUI()
-        SetPlayerInvincible(PlayerId(), false)
+    if canUseAction('open') then
+        LocalPlayer.state.menuOpen = true
+    
+        SetNuiFocus(true, true)
+        SendNUIMessage({
+            action = "showMenu"
+        })
     end
 end
 
@@ -123,9 +89,9 @@ function canUseAction(menu)
         if Config.groups[group][menu] then
             return true
         else
-            return Utils.notify('Error',L('notify.error.noAccess'), 'error')
+            return Utils.notify('Error', L('notify.error.noAccess'), 'error')
         end
     else 
-        return Utils.notify('Error',L('notify.error.groupNotAllowed'), 'error')
+        return Utils.notify('Error', L('notify.error.groupNotAllowed'):format(group), 'error')
     end
 end
