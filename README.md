@@ -227,7 +227,7 @@ Config = {
 
 ## Dependencies
 
-* Framework: [ESX](https://github.com/esx-framework/esx_core)/[QB](https://github.com/qbcore-framework/qb-core)
+* Framework: [ESX](https://github.com/esx-framework/esx_core)/[QB](https://github.com/qbcore-framework/qb-core) | NOT THOROUGHLY TESTED ON QBCORE!
 * [ox_lib](https://github.com/overextended/ox_lib)
 * [oxmysql](https://github.com/overextended/oxmysql)
 * [screenshot-basic](https://github.com/citizenfx/screenshot-basic) | For Spectate Screenshots
