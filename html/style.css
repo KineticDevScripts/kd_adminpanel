@@ -589,20 +589,20 @@ body.dark .home .text {
   flex-direction: column;
   width: 40%;
   margin: 0 auto;
-  flex: 1; /* Ensures both sides take up equal space */
+  flex: 1; 
 }
 
 .admin-section {
-  padding: 10px; /* Increased padding for better spacing */
+  padding: 10px; 
   margin: 5px;
   border-radius: 10px;
   border: 4px solid var(--primary-color);
   flex: 1;
-  min-height: 300px; /* Increased minimum height to prevent overflow */
+  min-height: 300px; 
   display: flex;
-  flex-direction: column; /* Ensure elements stack vertically */
-  justify-content: flex-start; /* Push content (buttons) to the top */
-  overflow-y: auto; /* Enable vertical scrolling if content overflows */
+  flex-direction: column; 
+  justify-content: flex-start; 
+  overflow-x: auto;
   transition: var(--tran-05);
 }
 
@@ -1079,10 +1079,10 @@ input {
   }
 
   .selected-player-container {
-    height: 600px;
-    max-height: 600px;
+    height: 500px;
+    max-height: 500px;
   }
-  
+
   .resources-table {
     height: 500px;
     max-height: 500px;

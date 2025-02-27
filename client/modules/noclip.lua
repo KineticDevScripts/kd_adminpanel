@@ -169,7 +169,8 @@ stopNoClip = function()
     ResetEntityAlpha(NoClipEntity)
     SetPoliceIgnorePlayer(PlayerPed, true)
     createEffect()
-    Utils.hideTextUI()
+    --Utils.hideTextUI()
+    exports.kd_utility:closeInteraction()
 
     if GetVehiclePedIsIn(PlayerPed, false) ~= 0 then
         while (not IsVehicleOnAllWheels(NoClipEntity)) and not IsNoClipping do
@@ -216,9 +217,38 @@ toggleNoClip = function(state)
         setupCam()
         PlaySoundFromEntity(-1, 'SELECT', PlayerPed, 'HUD_LIQUOR_STORE_SOUNDSET', 0, 0)
 
-        local activeText = L('textUI.noClip')
+        --local activeText = L('textUI.noClip')
 
-        Utils.showTextUI(table.concat(activeText))
+       -- Utils.showTextUI(table.concat(activeText))
+
+       exports.kd_utility:interactionButton({
+        Visible = true,
+        Controls = {
+            { key = "W", indexKey = 32, label = "Move Forward", description = "Hold W to move forward." },
+            { key = "A", indexKey = 34, label = "Move Left", description = "Hold A to move left." },
+            { key = "S", indexKey = 33, label = "Move Backward", description = "Hold S to move backward." },
+            { key = "D", indexKey = 35, label = "Move Right", description = "Hold D to move right." },
+            { key = "Q", indexKey = 52, label = "Move Up", description = "Hold Q to move up." },
+            { key = "E", indexKey = 51, label = "Move Down", description = "Hold E to move down." },
+            { isMouse = true, key = "Scrollwheel Up", indexKey = 15, label = "Increase Speed", description = "Use Scrollwheel Up to increase noClip speed." },
+            { isMouse = true, key = "Scrollwheel Down", indexKey = 16, label = "Decrease Speed", description = "Use Scrollwheel Up to decrease noClip speed." }
+        },
+        Schema = {
+            Styles = {
+                BackgroundColor     = "#1e1e1e",
+                BackgroundBindColor = "#ff5722",
+                FontColor           = "#ffffff",
+                Position            = "bottom",
+                Animation           = "slide-down",
+            },
+        },
+        onBindPressed = function(keyBind)
+            print("Pressed: " .. keyBind)
+        end,
+        onBindReleased = function(keyBind)
+            print("Released: " .. keyBind)
+        end
+        })
 
         if not PlayerIsInVehicle then
             ClearPedTasksImmediately(PlayerPed)

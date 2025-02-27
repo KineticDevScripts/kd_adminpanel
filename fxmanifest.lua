@@ -3,7 +3,7 @@ game 'gta5'
 lua54 'yes'
 
 author 'Kinetic Dev'
-version '2.0.0'
+version '2.0.2'
 
 ui_page 'html/index.html'
 
