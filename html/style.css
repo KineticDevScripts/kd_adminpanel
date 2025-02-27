@@ -1078,6 +1078,11 @@ input {
     max-height: 600px;
   }
 
+  .selected-player-container {
+    height: 600px;
+    max-height: 600px;
+  }
+  
   .resources-table {
     height: 500px;
     max-height: 500px;
