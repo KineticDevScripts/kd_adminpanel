@@ -1,3 +1,27 @@
+MySQL.ready(function()
+    Wait(1000)
+    local success, error = pcall(MySQL.scalar.await, 'SELECT 1 FROM `kd_bans`')
+
+    if not success then
+        MySQL.query([[
+            CREATE TABLE `kd_bans` (
+                `author` varchar(40) DEFAULT NULL,
+                `player` varchar(40) DEFAULT NULL,
+                `license` varchar(50) DEFAULT NULL,
+                `ip` varchar(25) DEFAULT NULL,
+                `discord` varchar(40) DEFAULT NULL,
+                `reason` varchar(100) DEFAULT NULL,
+                `ban_time` int(50) NOT NULL,
+                `exp_time` varchar(40) NOT NULL
+            ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+        ]])
+    end
+
+    if not success then
+        print('^2[success]^7 database was created successfully!')
+    end
+end)
+
 function sendLog(timestamp, action, admin, target, details)
     TriggerClientEvent('kd_adminpanel:addLog', -1, timestamp, action, admin, target, details)
 end
