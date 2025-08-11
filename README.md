@@ -1,5 +1,7 @@
 # Fivem Admin Panel
 
+# DOWNLOAD FROM LATEST RELEASE!!!
+
 A modern nui admin panel for FiveM servers, allowing admins to easily perform self actions, manage players and resources, and view action logs. The permission system allows specific groups be to be granted access to specific actions.
 
 [![Discord](https://img.shields.io/badge/Discord-7289DA?style=for-the-badge&logo=discord&logoColor=white)](https://discord.gg/UzkdTXqarr)
